@@ -1,0 +1,42 @@
+[project]
+name = "pybpm-admin"
+version = "0.1.0"
+description = "FastAPI server for the PyBPM Model Browser admin interface + Oryx editor"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.34",
+    "python-dotenv>=1.1",
+    "python-multipart>=0.0.20",
+    "httpx>=0.28",
+    "ruff>=0.11",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+    "httpx>=0.28",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+exclude = [".venv", "__pycache__", "static/jscript/ace-builds"]
+
+[tool.ruff.lint]
+ignore = [
+    "BLE001",  # blind except — acceptable for body parsing fallbacks in API handlers
+    "B006",    # mutable defaults — used intentionally in FastAPI router signatures (Request pattern)
+    "S110",    # try-except-pass — intentional silent fallback when request body is not JSON
+]
+
+[tool.ruff.lint.per-file-ignores]
+"admin_router.py" = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.25",
+]

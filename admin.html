@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>DNA2BPM — Model Browser</title>
+  <link rel="stylesheet" href="/static/css/browser.css" />
+  <link rel="stylesheet" href="/static/css/load_mask.css" />
+  <link rel="stylesheet" href="/static/css/extra-icons.css" />
+
+  <!-- ExtJS framework (Ext.data.StoreManager, tree.Panel, Viewport, etc.) -->
+  <script src="/static/jscript/ext/ext-all.js"></script>
+  <link rel="stylesheet" href="/static/jscript/ext/resources/ext-theme-classic/ext-theme-classic-all.css" />
+
+  <!-- jQuery (required by panzoom) -->
+  <script src="/static/jscript/jquery/dist/jquery.min.js"></script>
+
+  <!-- Pan/Zoom support for SVG editor -->
+  <script src="/static/jscript/panzoom/jquery.mousewheel.js"></script>
+  <script src="/static/jscript/panzoom/jquery.panzoom.min.js"></script>
+  <script src="/static/jscript/panzoom/pnazoom_wheel.js"></script>
+
+  <!-- Auth shim — injects session cookie as Bearer token on all requests -->
+  <script src="/static/jscript/browser/auth_shim.js"></script>
+
+  <!-- ExtJS configuration + model utils -->
+  <script src="/static/jscript/ext.settings.js"></script>
+  <script src="/static/jscript/ext.model-utils.js"></script>
+
+  <!-- Data stores (TreeStore, ModelStore, GroupStore) -->
+  <script src="/static/jscript/browser/data.js"></script>
+
+  <!-- Tree panel + context menu + actions (Add/Remove/Duplicate folder/model) -->
+  <script src="/static/jscript/browser/tree.js"></script>
+
+  <!-- Center panel with model editor + import window -->
+  <script src="/static/jscript/browser/center_panel.js"></script>
+
+  <!-- Overlay events for SVG shapes -->
+  <script src="/static/jscript/browser/ext.add_events.js"></script>
+
+  <!-- Main viewport: west (tree) + center (editor) border layout -->
+  <script src="/static/jscript/browser/viewport.js"></script>
+
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    #loading-mask { position: fixed; inset: 0; background: #f0f2f5; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+    #loading-mask .spinner { width: 48px; height: 48px; border: 4px solid #ddd; border-top-color: #4a90d9; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- Loading mask (shown while ExtJS + all assets load) -->
+<div id="loading-mask"><div class="spinner"></div></div>
+
+<!-- ExtJS Viewport container (filled by viewport.js) -->
+<div id="editor-container"></div>
+
+<script>
+(function() {
+  // Configuration — pybpm-api backend URL. Override with ?apiUrl=... query param.
+  var apiUrl = (new URLSearchParams(window.location.search)).get('apiUrl') || '';
+  if (!apiUrl) {
+    apiUrl = window.location.protocol + '//' + window.location.hostname + ':5000/api/v1';
+  }
+
+  // Set globals for editor JS after auth — browser/data.js, tree.js, viewport.js reference these.
+  var globals = {
+    base_url: '/',
+    module_url: '/admin/',
+    editor_api: apiUrl,
+    pybpm_api_url: apiUrl,
+  };
+
+  console.log('[admin] Model Browser loaded.');
+})();
+</script>
+</body>
+</html>

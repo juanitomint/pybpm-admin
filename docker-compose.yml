@@ -1,0 +1,9 @@
+services:
+  admin:
+    build: .
+    container_name: pybpm-admin
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app

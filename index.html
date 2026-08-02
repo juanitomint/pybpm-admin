@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>DNA2BPM</title>
+  <!-- ExtJS framework files (ext-all.js, ext-all.css) — not yet ported from legacy -->
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    #editor-container { width: 100vw; height: 100vh; display: none; }
+
+    /* Inline login form (shown when no token in localStorage) */
+    .login-overlay {
+      position: fixed; inset: 0; background: #f0f2f5; display: flex; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .login-card { width: 360px; padding: 40px; background: #fff; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+    .login-card h1 { margin: 0 0 8px; font-size: 24px; color: #333; text-align: center; }
+    .login-card p.subtitle { margin: 0 0 24px; color: #666; font-size: 14px; text-align: center; }
+    label { display: block; margin-bottom: 4px; font-size: 13px; color: #555; font-weight: 500; }
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 4px;
+      font-size: 14px; margin-bottom: 16px; transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: #4a90d9; box-shadow: 0 0 0 2px rgba(74,144,217,0.2); }
+    .btn-submit {
+      width: 100%; padding: 12px; background: #4a90d9; color: #fff; border: none;
+      border-radius: 4px; font-size: 15px; cursor: pointer; transition: background 0.2s;
+    }
+    .btn-submit:hover { background: #357abd; }
+    .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+    .error-msg { color: #d9534f; font-size: 13px; margin-bottom: 12px; display: none; padding: 8px 12px; background: #fdf0ef; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- Login form (shown when no JWT in localStorage) -->
+<div id="login-overlay" class="login-overlay">
+  <div class="login-card">
+    <h1>DNA2BPM</h1>
+    <p class="subtitle">Model Browser Admin Interface</p>
+    <div id="error-msg" class="error-msg"></div>
+    <form id="login-form">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username" required autofocus />
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required />
+      <button type="submit" class="btn-submit" id="submit-btn">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<!-- Editor container (shown after successful auth) -->
+<div id="editor-container"></div>
+
+<script>
+(function() {
+  // Configuration — pybpm-api backend URL. Override with ?apiUrl=... query param.
+  var apiUrl = (new URLSearchParams(window.location.search)).get('apiUrl') || '';
+  if (!apiUrl) {
+    apiUrl = window.location.protocol + '//' + window.location.hostname + ':5000/api/v1';
+  }
+
+  // Set globals for editor JS after auth
+  var globals = {
+    base_url: '/',
+    module_url: '/admin/',
+    editor_api: apiUrl,
+  };
+
+  function showLogin() {
+    document.getElementById('login-overlay').style.display = 'flex';
+    document.getElementById('editor-container').style.display = 'none';
+  }
+
+  function hideLogin() {
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('editor-container').style.display = 'block';
+  }
+
+  // If already logged in, show editor and init ExtJS viewport
+  if (localStorage.getItem('bpm_token')) {
+    showLogin();
+    hideLogin();
+    console.log('[app] Token found on page load, loading browser UI...');
+    loadBrowserScripts(apiUrl);
+    return;
+  }
+
+  // Helper to dynamically load JS files after auth
+  function loadBrowserScripts(baseApi) {
+    var scripts = [
+      '/static/jscript/browser/data.js',
+      '/static/jscript/browser/tree.js',
+      '/static/jscript/browser/center_panel.js',
+      '/static/jscript/browser/viewport.js'
+    ];
+    
+    // Update globals before loading browser JS (they reference these)
+    globals.base_url = '/';
+    globals.module_url = '/admin/';
+    globals.editor_api = baseApi;
+    
+    var loadIndex = 0;
+    function loadNext() {
+      if (loadIndex >= scripts.length) return;
+      var script = document.createElement('script');
+      script.src = scripts[loadIndex];
+      script.onload = function() {
+        console.log('[app] Loaded:', scripts[loadIndex]);
+        loadIndex++;
+        loadNext();
+      };
+      script.onerror = function() {
+        console.error('[app] Failed to load:', scripts[loadIndex]);
+        loadIndex++;
+        loadNext(); // Continue loading others even if one fails
+      };
+      document.head.appendChild(script);
+    }
+    
+    console.log('[app] Loading browser scripts...');
+    loadNext();
+  }
+
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var username = document.getElementById('username').value.trim();
+    var password = document.getElementById('password').value;
+    var btn = document.getElementById('submit-btn');
+    var errorMsg = document.getElementById('error-msg');
+
+    errorMsg.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+
+    // POST to pybpm-api /auth/token (OAuth2 password grant — form-encoded)
+    var formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
+
+    fetch(apiUrl + '/auth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
+      body: formData.toString()
+    })
+    .then(function(resp) {
+      if (!resp.ok) {
+        return resp.json().then(function(data) {
+          throw new Error(data.detail || 'Authentication failed');
+        });
+      }
+      return resp.json();
+    })
+    .then(function(data) {
+      // Store token in localStorage for subsequent requests to pybpm-admin and pybpm-api
+      localStorage.setItem('bpm_token', data.access_token);
+      
+      console.log('[app] Authenticated, redirecting to editor...');
+      window.location.href = '/admin?apiUrl=' + encodeURIComponent(apiUrl);
+    })
+    .catch(function(err) {
+      errorMsg.textContent = err.message || 'Login failed. Please check your credentials.';
+      errorMsg.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    });
+  });
+
+})();
+</script>
+
+<!-- ExtJS framework — not yet ported (ext-all.js, ext-all.css missing from static/) -->
+<!-- Existing JS libs that are present in static/ -->
+<script src="/static/jscript/jsoneditor.min.js"></script>
+<script src="/static/jscript/moment/moment.js"></script>
+</body>
+</html>

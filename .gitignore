@@ -1,0 +1,21 @@
+node_modules/
+dist/
+.env.local
+*.tsbuildinfo
+
+# Python / uv
+.venv/
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+.ruff_cache/
+.uv/
+
+# Python env files
+.env
+!/.env.example
+
+# Legacy ExtJS distribution (sourced from dna2bpm/jscript/ext/)
+static/jscript/ext/build.xml
+static/jscript/ext/license.txt
+static/jscript/ext/release-notes.html
