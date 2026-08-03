@@ -1,79 +1,178 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>DNA2BPM — Model Browser</title>
-  <link rel="stylesheet" href="/static/css/browser.css" />
-  <link rel="stylesheet" href="/static/css/load_mask.css" />
-  <link rel="stylesheet" href="/static/css/extra-icons.css" />
+    <head>
+        <meta charset="utf-8" />
+        <title>DNA2BPM — Model Browser</title>
+        <link rel="stylesheet" href="/static/css/browser.css" />
+        <link rel="stylesheet" href="/static/css/load_mask.css" />
+        <link rel="stylesheet" href="/static/css/extra-icons.css" />
 
   <!-- ExtJS framework (Ext.data.StoreManager, tree.Panel, Viewport, etc.) -->
-  <script src="/static/jscript/ext/ext-all.js"></script>
-  <link rel="stylesheet" href="/static/jscript/ext/resources/ext-theme-classic/ext-theme-classic-all.css" />
+  <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/jscript/ext/resources/css/ext-all-neptune-debug.css"
+  />
+  <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/jscript/ext/src/ux/statusbar/css/statusbar.css"
+  />
+  <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/jscript/ext/src/ux/css/CheckHeader.css"
+  />
+        <!-- jQuery (required by panzoom) -->
+        <script src="/static/jscript/jquery/dist/jquery.min.js"></script>
 
-  <!-- jQuery (required by panzoom) -->
-  <script src="/static/jscript/jquery/dist/jquery.min.js"></script>
+        <!-- Pan/Zoom support for SVG editor -->
+        <script src="/static/jscript/panzoom/jquery.panzoom.min.js"></script>
+        <script src="/static/jscript/panzoom/jquery.mousewheel.js"></script>
+        <script src="/static/jscript/panzoom/pnazoom_wheel.js"></script>
 
-  <!-- Pan/Zoom support for SVG editor -->
-  <script src="/static/jscript/panzoom/jquery.mousewheel.js"></script>
-  <script src="/static/jscript/panzoom/jquery.panzoom.min.js"></script>
-  <script src="/static/jscript/panzoom/pnazoom_wheel.js"></script>
+        <!-- ExtJS configuration + model utils -->
+        <script src="/static/jscript/ext.settings.js"></script>
+        <script src="/static/jscript/ext.model-utils.js"></script>
 
-  <!-- Auth shim — injects session cookie as Bearer token on all requests -->
-  <script src="/static/jscript/browser/auth_shim.js"></script>
+        <!-- Data stores (TreeStore, ModelStore, GroupStore) -->
+        <script src="/static/jscript/browser/data.js"></script>
 
-  <!-- ExtJS configuration + model utils -->
-  <script src="/static/jscript/ext.settings.js"></script>
-  <script src="/static/jscript/ext.model-utils.js"></script>
+        <!-- Tree panel + context menu + actions (Add/Remove/Duplicate folder/model) -->
+        <script src="/static/jscript/browser/tree.js"></script>
 
-  <!-- Data stores (TreeStore, ModelStore, GroupStore) -->
-  <script src="/static/jscript/browser/data.js"></script>
+        <!-- Overlay events for SVG shapes -->
+        <script src="/static/jscript/browser/ext.add_events.js"></script>
 
-  <!-- Tree panel + context menu + actions (Add/Remove/Duplicate folder/model) -->
-  <script src="/static/jscript/browser/tree.js"></script>
+        <!-- Center panel with model editor + import window -->
+        <script src="/static/jscript/browser/center_panel.js"></script>
 
-  <!-- Center panel with model editor + import window -->
-  <script src="/static/jscript/browser/center_panel.js"></script>
+        <!-- Main viewport: west (tree) + center (editor) border layout -->
+        <script src="/static/jscript/browser/viewport.js"></script>
 
-  <!-- Overlay events for SVG shapes -->
-  <script src="/static/jscript/browser/ext.add_events.js"></script>
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                overflow: hidden;
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    sans-serif;
+            }
+            #loading-mask {
+                position: fixed;
+                inset: 0;
+                background: #f0f2f5;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            #loading-mask .spinner {
+                width: 48px;
+                height: 48px;
+                border: 4px solid #ddd;
+                border-top-color: #4a90d9;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+    <body class="x-body x-webkit x-chrome x-linux">
+        <div id="content"></div>
+        <div id="loading-mask" style=""></div>
+        <div id="loading">
+            <div class="loading-indicator">
+                <img
+                    src="/static/images/loader18.gif"
+                    style="margin-right: 8px; float: left; vertical-align: top"
+                />
+                <div style="float: left">
+                    Model Browser<br />
+                    <span id="loading-msg"> Loading Engine Items... </span>
+                </div>
+            </div>
+        </div>
 
-  <!-- Main viewport: west (tree) + center (editor) border layout -->
-  <script src="/static/jscript/browser/viewport.js"></script>
+        <!-- Globals config (must be before loading messages) -->
+        <script type="text/javascript">
+            // Configuration — pybpm-api backend URL. Override with ?apiUrl=... query param.
+            var apiUrl = new URLSearchParams(window.location.search).get("apiUrl") || "";
+            if (!apiUrl) {
+                apiUrl = window.location.protocol + "//" + window.location.hostname + ":5000/";
+            }
 
-  <style>
-    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    #loading-mask { position: fixed; inset: 0; background: #f0f2f5; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-    #loading-mask .spinner { width: 48px; height: 48px; border: 4px solid #ddd; border-top-color: #4a90d9; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
-</head>
-<body>
+            // Set globals for editor JS after auth — browser/data.js, tree.js, viewport.js reference these.
+            var globals = {
+                "base_url": "/",
+                "module_url": "/admin/",
+                "editor_api": apiUrl,
+                "pybpm_api_url": apiUrl,
+            };
+        </script>
+        <script type="text/javascript">document.getElementById('loading-msg').innerHTML += ' Loading Core API...';</script>
 
-<!-- Loading mask (shown while ExtJS + all assets load) -->
-<div id="loading-mask"><div class="spinner"></div></div>
+        <!-- ExtJS framework -->
+        <script src="/static/jscript/ext/bootstrap.js"></script>
+        <script src="/static/jscript/ext/packages/ext-theme-neptune/build/ext-theme-neptune.js"></script>
 
-<!-- ExtJS Viewport container (filled by viewport.js) -->
-<div id="editor-container"></div>
+        <script type="text/javascript">document.getElementById('loading-msg').innerHTML += '<span class="ok">OK.</span>';</script>
 
-<script>
-(function() {
-  // Configuration — pybpm-api backend URL. Override with ?apiUrl=... query param.
-  var apiUrl = (new URLSearchParams(window.location.search)).get('apiUrl') || '';
-  if (!apiUrl) {
-    apiUrl = window.location.protocol + '//' + window.location.hostname + ':5000/api/v1';
-  }
+        <!-- jQuery -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading JQuery...";}catch(e){}</script>
+        <script src="/static/jscript/jquery/dist/jquery.min.js"></script>
 
-  // Set globals for editor JS after auth — browser/data.js, tree.js, viewport.js reference these.
-  var globals = {
-    base_url: '/',
-    module_url: '/admin/',
-    editor_api: apiUrl,
-    pybpm_api_url: apiUrl,
-  };
+        <!-- Panzoom Minified -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading Panzoom Minified...";}catch(e){}</script>
+        <script src="/static/jscript/panzoom/jquery.panzoom.min.js"></script>
 
-  console.log('[admin] Model Browser loaded.');
-})();
-</script>
-</body>
+        <!-- wheel-suppport -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading wheel-suppport...";}catch(e){}</script>
+        <script src="/static/jscript/panzoom/jquery.mousewheel.js"></script>
+
+        <!-- wheel script -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading wheel script...";}catch(e){}</script>
+        <script src="/static/jscript/panzoom/pnazoom_wheel.js"></script>
+
+        <!-- Settings -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading Settings...";}catch(e){}</script>
+        <script src="/static/jscript/ext.settings.js"></script>
+
+        <!-- Model utils -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading Model utils...";}catch(e){}</script>
+        <script src="/static/jscript/ext.model-utils.js"></script>
+
+        <!-- Data Objects -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading Data Objects...";}catch(e){}</script>
+        <script src="/static/jscript/browser/data.js"></script>
+
+        <!-- Module Tree -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading Module Tree...";}catch(e){}</script>
+        <script src="/static/jscript/browser/tree.js"></script>
+
+        <!-- Events for overlays -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading Events for overlays...";}catch(e){}</script>
+        <script src="/static/jscript/browser/ext.add_events.js"></script>
+
+        <!-- Center Panel -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading Center Panel...";}catch(e){}</script>
+        <script src="/static/jscript/browser/center_panel.js"></script>
+
+        <!-- Viewport -->
+        <script type="text/javascript">try{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading Viewport...";}catch(e){}</script>
+        <script src="/static/jscript/browser/viewport.js"></script>
+
+        <script>
+            (function () {
+                console.log('[admin] Model Browser loaded.');
+            })();
+        </script>
+    </body>
 </html>

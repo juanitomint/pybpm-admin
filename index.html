@@ -59,12 +59,12 @@
     apiUrl = window.location.protocol + '//' + window.location.hostname + ':5000/api/v1';
   }
 
-  // Set globals for editor JS after auth
-  var globals = {
-    base_url: '/',
-    module_url: '/admin/',
-    editor_api: apiUrl,
-  };
+    // Set globals for editor JS after auth — browser/data.js, tree.js, viewport.js reference these.
+    window.globals = {
+      base_url: '/',
+      module_url: '/admin/',
+      editor_api: apiUrl,
+    };
 
   function showLogin() {
     document.getElementById('login-overlay').style.display = 'flex';

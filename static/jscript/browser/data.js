@@ -31,10 +31,10 @@ Ext.create('Ext.data.Store', {
         noCache: false,//---get rid of the ?dc=.... in urls
         method:'post',
         api: {
-            create  : globals.pybpm-api_url+'admin/group/create',
-            read    : globals.pybpm-api_url+'admin/group/read',
-            update  : globals.pybpm-api_url+'admin/group/update',
-            destroy : globals.pybpm-api_url+'admin/group/destroy'
+            create  : globals.pybpm_api_url+'admin/group/create',
+            read    : globals.pybpm_api_url+'admin/group/read',
+            update  : globals.pybpm_api_url+'admin/group/update',
+            destroy : globals.pybpm_api_url+'admin/group/destroy'
         },
         reader: {
             type: 'json',
@@ -96,10 +96,10 @@ Ext.create('Ext.data.Store', {
         noCache: false,//---get rid of the ?dc=.... in urls
         method:'post',
         api: {
-            create  : globals.pybpm-api_url+'repository/model/create',
-            read    : globals.pybpm-api_url+'repository/model/read',
-            update  : globals.pybpm-api_url+'admin/user/model/update',
-            destroy : globals.pybpm-api_url+'admin/user/model/destroy'
+            create  : globals.pybpm_api_url+'repository/model/create',
+            read    : globals.pybpm_api_url+'repository/model/read',
+            update  : globals.pybpm_api_url+'admin/user/model/update',
+            destroy : globals.pybpm_api_url+'admin/user/model/destroy'
         },
         reader: {
             type: 'json',
@@ -140,7 +140,10 @@ Ext.create('Ext.data.TreeStore', {
     proxy: {
         type: 'ajax',
         noCache: false,//---get rid of the ?dc=.... in urls
-        url: globals.pybpm-api_url + 'get_tree2/json'
+        url: globals.pybpm_api_url +'bpm/repository/'+ 'get_tree2/json',
+        headers: {
+            'Authorization': 'Bearer ' + (localStorage.getItem('bpm_token') || '')
+        }
     //url:'http://localhost/ext/examples/build/KitchenSink/ext-theme-neptune/resources/data/tree/check-nodes.json?_dc=1363724048632&sort=[{%22property%22%3A%22leaf%22%2C%22direction%22%3A%22ASC%22}%2C{%22property%22%3A%22text%22%2C%22direction%22%3A%22ASC%22}]&node=root'
     },
     sorters: [{

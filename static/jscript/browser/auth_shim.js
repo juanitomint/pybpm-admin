@@ -50,7 +50,7 @@
             };
 
             options.failure = function (response, opts) {
-                // If pybpm-admin returned 401, redirect to login.
+                // If pybpm-admin returned 401, redirect the user back to login.
                 if (response && response.status === 401) {
                     // Clear the expired session cookie by setting max-age=0.
                     document.cookie = COOKIE_NAME + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';

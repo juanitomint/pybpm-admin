@@ -16,9 +16,48 @@ from fastapi import FastAPI, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from admin_router import router as admin_router
 from config import Config
+
+
+class NoCacheMiddleware:
+    """Add Cache-Control headers to prevent browser caching of admin pages."""
+
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] == "http":
+            path = scope.get("path", "")
+            should_nocache = (
+                path == "/admin"
+                or path.startswith("/admin/")
+                or path == "/"
+                or path == "/login"
+                or path == "/static/jscript/"
+            )
+
+            if not should_nocache:
+                await self.app(scope, receive, send)
+                return
+
+            original_send = send
+
+            async def modified_send(message):
+                if message["type"] == "http.response.start":
+                    headers = dict(message.get("headers", []))
+                    headers[b"cache-control"] = b"no-cache, no-store, must-revalidate"
+                    headers[b"pragma"] = b"no-cache"
+                    headers[b"expires"] = b"0"
+                    message["headers"] = list(headers.items())
+                await original_send(message)
+
+            await self.app(scope, receive, modified_send)
+        else:
+            await self.app(scope, receive, send)
+
 
 _base_dir = Path(__file__).resolve().parent
 _index_html = (_base_dir / "index.html").read_text(encoding="utf-8")
@@ -159,6 +198,9 @@ def create_app() -> FastAPI:
     @app.get("/healthz")
     async def health_check():
         return {"status": "ok", "service": "pybpm-admin"}
+
+    # Disable caching for admin pages (ExtJS UI must always fetch fresh assets)
+    app = NoCacheMiddleware(app)
 
     return app
 

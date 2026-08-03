@@ -205,13 +205,13 @@ Legacy methods:
 
 **Goal**: Wire the existing ExtJS browser code (`static/jscript/browser/`) to call admin endpoints on the same origin, and implement the login flow that authenticates against pybpm-api before the model browser initializes.
 
-The browser UI files are served by FastAPI's `StaticFiles` mount at `/static`. The JavaScript uses `globals.module_url` to build API URLs:
+The browser UI files are served by FastAPI's `StaticFiles` mount at `/static`. The JavaScript uses `globals.pybpm_api_url` to build API URLs:
 
 ```javascript
 var apiUrl = (new URLSearchParams(window.location.search)).get('apiUrl') || '';
 // admin endpoints live on same origin:
-globals.base_url = '/';                    // pybpm-admin root (serves index.html + static)
-globals.module_url = '/admin/';            // admin API prefix (same server)
+'/';                    // pybpm-admin root (serves index.html + static)
+'/admin/';            // admin API prefix (same server)
 // editor persistence calls go to pybpm-api:
 if (apiUrl) {
   globals.editor_api = apiUrl;             // e.g., http://localhost:5000/api/v1
@@ -219,8 +219,8 @@ if (apiUrl) {
 ```
 
 **Steps**:
-1. Update `index.html` bootstrap to set `globals.module_url = '/admin/'` and `globals.base_url = '/'`.
-2. The existing browser JS files (`data.js`, `tree.js`, `viewport.js`) already build URLs like `globals.module_url + 'get_tree2/json'` — these now resolve to `/admin/get_tree2/json` which is served by pybpm-admin itself. No file changes needed in `static/`.
+1. Update `index.html` bootstrap to set `globals.pybpm_api_url = '/admin/'` and `globals.base_url = '/'`.
+2. The existing browser JS files (`data.js`, `tree.js`, `viewport.js`) already build URLs like `globals.pybpm_api_url + 'get_tree2/json'` — these now resolve to `/admin/get_tree2/json` which is served by pybpm-admin itself. No file changes needed in `static/`.
 3. Add `auth_shim.js`: intercepts all `Ext.Ajax.request`, `Ext.data.Connection`, and `Ext.data.JsonStore` calls. If the request target starts with `/admin/` (pybpm-admin) or matches `globals.editor_api` prefix (pybpm-api), inject `Authorization: Bearer <token>` from localStorage.
 4. Add login flow: before ExtJS viewport initializes, check if a valid JWT exists in localStorage. If not, show an ExtJS login panel with username/password fields. On submit, POST `{username, password}` to pybpm-api's `/api/v1/auth/token` (using `globals.editor_api`). Store the returned token in localStorage.
 5. Add token refresh/revalidation: periodically call `GET /api/v1/auth/me` on pybpm-api to verify the token is still valid. If it returns 401, clear the token and show the login panel again.
