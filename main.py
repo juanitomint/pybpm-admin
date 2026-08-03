@@ -3,7 +3,6 @@
 Serves:
 - Static Oryx editor assets (JS/CSS/images) at /static
 - Standalone login page at /login
-- Model Browser admin API endpoints at /admin/*
 - The editor shell page (index.html) at /
 - The Model Browser UI at /admin (requires authentication)
 """
@@ -18,7 +17,6 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-from admin_router import router as admin_router
 from config import Config
 
 
@@ -33,7 +31,6 @@ class NoCacheMiddleware:
             path = scope.get("path", "")
             should_nocache = (
                 path == "/admin"
-                or path.startswith("/admin/")
                 or path == "/"
                 or path == "/login"
                 or path == "/static/jscript/"
@@ -73,7 +70,7 @@ def _user_has_session(request: Request) -> bool:
 
 
 async def _authenticate_user(username: str, password: str) -> dict | None:
-    """Attempt to authenticate against pybpm-api. Returns token data on success, None otherwise."""
+    """Authenticate user via pybpm-api /auth/token endpoint."""
     auth_url = Config.PYBPM_API_URL.rstrip("/") + "/auth/token"
     payload = {
         "grant_type": "password",
@@ -103,7 +100,7 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json",
     )
 
-    # CORS — allow pybpm-api origin for Oryx editor save/load calls, and same-origin admin calls.
+    # CORS: allow pybpm-api origin (editor save/load) and same-origin admin calls.
     origins = [
         f"http://localhost:{Config.PORT}",
         "http://localhost:5000",  # pybpm-api dev server
@@ -121,9 +118,6 @@ def create_app() -> FastAPI:
     if os.path.isdir(Config.STATIC_ROOT):
         app.mount("/static", StaticFiles(directory=Config.STATIC_ROOT), name="static")
 
-    # Include admin router (/admin/* endpoints — Model Browser API)
-    app.include_router(admin_router)
-
     @app.get("/", response_class=HTMLResponse)
     async def editor_index():
         """Serve the Oryx editor shell page."""
@@ -131,7 +125,7 @@ def create_app() -> FastAPI:
 
     @app.get("/login", response_class=HTMLResponse)
     async def login_page(request: Request):
-        """Standalone login form. If already authenticated, redirect to admin or ?next= URL."""
+        """Standalone login page; redirects authenticated users to /admin."""
         if _user_has_session(request):
             next_url = request.query_params.get("next") or "/admin"
             return RedirectResponse(url=next_url)
@@ -143,7 +137,7 @@ def create_app() -> FastAPI:
         password: str = Form(...),
         request: Request = None,  # type: ignore[assignment]
     ):
-        """Authenticate user against pybpm-api. On success set session cookie and redirect."""
+        """Validate credentials via pybpm-api, then set session cookie."""
         auth_data = await _authenticate_user(username, password)
 
         if auth_data is None or "access_token" not in auth_data:
@@ -189,7 +183,7 @@ def create_app() -> FastAPI:
 
     @app.get("/admin")
     async def admin_editor(request: Request):
-        """Serve the Model Browser admin interface. Unauthenticated users are redirected to /login."""
+        """Render the Model Browser UI; unauthenticated users are sent to /login."""
         if not _user_has_session(request):
             next_url = str(request.url)
             return RedirectResponse(url=f"/login?next={next_url}", status_code=302)
@@ -199,7 +193,7 @@ def create_app() -> FastAPI:
     async def health_check():
         return {"status": "ok", "service": "pybpm-admin"}
 
-    # Disable caching for admin pages (ExtJS UI must always fetch fresh assets)
+    # Disable caching for admin/editor pages (ExtJS UI must always fetch fresh assets)
     app = NoCacheMiddleware(app)
 
     return app

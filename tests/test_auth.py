@@ -2,23 +2,13 @@
 
 
 class TestAuthValidation:
-    """Tests for JWT token validation on admin endpoints."""
+    """Tests for session cookie validation on admin page."""
 
     def test_missing_session_cookie_redirects_to_login(self, sync_test_client):  # type: ignore[no-untyped-def]
         """Unauthenticated /admin returns a redirect to /login with the original URL."""
         resp = sync_test_client.get("/admin", follow_redirects=False)
         assert resp.status_code == 302
         assert "/login" in resp.headers["location"]
-
-    def test_unauthenticated_cannot_access_admin_api(self, sync_test_client):  # type: ignore[no-untyped-def]
-        """Unauthenticated admin API calls return 401 (not redirected — the page layer handles redirect)."""
-        resp = sync_test_client.get("/admin/get_tree/json", follow_redirects=False)
-        assert resp.status_code == 401
-
-    def test_unauthenticated_cannot_access_get_models(self, sync_test_client):  # type: ignore[no-untyped-def]
-        """Unauthenticated get_models returns 401."""
-        resp = sync_test_client.get("/admin/get_models", follow_redirects=False)
-        assert resp.status_code == 401
 
 
 class TestLoginFlow:
@@ -55,7 +45,7 @@ class TestLoginFlow:
 
 
 class TestSessionCookie:
-    """Tests for session cookie handling on admin endpoints."""
+    """Tests for session cookie handling on /admin."""
 
     def test_valid_session_cookie_allows_admin_access(self, sync_test_client):  # type: ignore[no-untyped-def]
         resp = sync_test_client.get(
@@ -70,11 +60,3 @@ class TestSessionCookie:
             headers={"Cookie": "bpm_session=mock-session-token"},
         )
         assert "text/html" in resp.headers["content-type"]
-
-    def test_admin_api_with_cookie_passes_through(self, sync_test_client):  # type: ignore[no-untyped-def]
-        """With a valid session cookie the request should reach the backend."""
-        resp = sync_test_client.get(
-            "/admin/get_models",
-            headers={"Cookie": "bpm_session=mock-session-token"},
-        )
-        assert resp.status_code == 200

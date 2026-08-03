@@ -33,7 +33,9 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"admin_router.py" = []
+"main.py" = ["C901", "E501"]
+"config.py" = ["E501"]
+"tests/*" = ["S101", "E501"]
 
 [dependency-groups]
 dev = [
