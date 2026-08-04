@@ -31,10 +31,10 @@ Ext.create('Ext.data.Store', {
         noCache: false,//---get rid of the ?dc=.... in urls
         method:'post',
         api: {
-            create  : globals.pybpm_api_url+'admin/group/create',
-            read    : globals.pybpm_api_url+'admin/group/read',
-            update  : globals.pybpm_api_url+'admin/group/update',
-            destroy : globals.pybpm_api_url+'admin/group/destroy'
+            create  : globals.apiUrl+'admin/group/create',
+            read    : globals.apiUrl+'admin/group/read',
+            update  : globals.apiUrl+'admin/group/update',
+            destroy : globals.apiUrl+'admin/group/destroy'
         },
         reader: {
             type: 'json',
@@ -96,10 +96,10 @@ Ext.create('Ext.data.Store', {
         noCache: false,//---get rid of the ?dc=.... in urls
         method:'post',
         api: {
-            create  : globals.pybpm_api_url+'repository/model/create',
-            read    : globals.pybpm_api_url+'repository/model/read',
-            update  : globals.pybpm_api_url+'admin/user/model/update',
-            destroy : globals.pybpm_api_url+'admin/user/model/destroy'
+            create  : globals.apiUrl+'repository/model/create',
+            read    : globals.apiUrl+'repository/model/read',
+            update  : globals.apiUrl+'admin/user/model/update',
+            destroy : globals.apiUrl+'admin/user/model/destroy'
         },
         reader: {
             type: 'json',
@@ -140,7 +140,7 @@ Ext.create('Ext.data.TreeStore', {
     proxy: {
         type: 'ajax',
         noCache: false,//---get rid of the ?dc=.... in urls
-        url: globals.pybpm_api_url +'bpm/repository/'+ 'get_tree2/json',
+        url: globals.apiUrl +'bpm/repository/'+ 'get_tree2/json',
         headers: {
             'Authorization': 'Bearer ' + (localStorage.getItem('bpm_token') || '')
         }

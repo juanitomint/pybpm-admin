@@ -43,7 +43,7 @@ var ModelAdd = Ext.create('Ext.Action', {
 
             if (!n.isLeaf()) {
                 Ext.MessageBox.prompt('Model', 'Please enter Model id:', function(btn,text){
-                    
+
                     if(btn=='ok' && text){
                         text_id=text.trim().replace('/','-');
                         node={
@@ -56,7 +56,7 @@ var ModelAdd = Ext.create('Ext.Action', {
                         tree.setLoading('saving...');
                         Ext.Ajax.request({
                             // the url to the remote source\/test-call-activity
-                            url: globals.module_url+'repository/add/',
+                            url: globals.apiUrl + globals.module_url+'/add',
                             method: 'POST',
                             params:{
 
@@ -106,7 +106,7 @@ var ModelDuplicate = Ext.create('Ext.Action', {
                         tree.setLoading('saving...');
                         Ext.Ajax.request({
                             // the url to the remote source\/test-call-activity
-                            url: globals.module_url+'repository/duplicate',
+                            url: globals.apiUrl + globals.module_url+'/duplicate',
                             method: 'POST',
                             params:{
 
@@ -161,8 +161,8 @@ var ModelRemove = Ext.create('Ext.Action', {
                         tree.setLoading('Saving');
                         Ext.Ajax.request({
                             // the url to the remote source
-                            url: globals.module_url+'repository/delete/model',
-                            method: 'POST',
+                            url: globals.apiUrl + globals.module_url+'/delete',
+                            method: 'DELETE',
                             params:{
                                 //---get the active node
                                 'idwf':n.data.id.toString()
@@ -230,10 +230,10 @@ var TreeClick=function(widget,event){
     //---only do something if its leaf=model
     if(n && n.isLeaf()){
 
-        //url='http://localhost/dna2.gitorious/bpm/repository/load/model/ksemilla-listados/json';
+
         options={
 
-        'url': globals.module_url + 'get_model/' + n.data.id.toString()
+        'url': globals.apiUrl + globals.module_url + 'get_model/' + n.data.id.toString()
         }
         //center_panel.body.load(options);
         //---prevent not loading
@@ -271,7 +271,7 @@ function move_node(n,path){
     tree.setLoading('Saving data...');
     Ext.Ajax.request({
         // the url to the remote source
-        url: globals.module_url+'/repository/update_folder',
+        url: globals.apiUrl + globals.module_url+'/update_folder',
         method: 'POST',
         params:{
 

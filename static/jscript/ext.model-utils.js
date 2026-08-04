@@ -32,7 +32,7 @@ function load_data(idwf,callback) {
                 alert('Error Loading:' + response.err);
             },
             success: function(response, options) {
-                
+
                 var model_data = Ext.JSON.decode(response.responseText);
 
                 center_panel = Ext.getCmp('modelPanel');
@@ -55,7 +55,7 @@ function load_data(idwf,callback) {
                  event.stopEvent();
                  console.log(event,target,options);
                  });
-                 
+
                  });
                  */
                 //----first remove previous events

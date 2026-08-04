@@ -4,7 +4,7 @@
  *
  * Handles two targets:
  *   1) pybpm-admin admin API endpoints (globals.module_url = '/admin/')
- *   2) pybpm-api editor persistence (globals.editor_api prefix)
+ *   2) pybpm-api editor persistence (globals.apiUrl prefix)
  *
  * On a 401 response the session cookie is cleared and the user is redirected
  * to /login so they can re-authenticate.

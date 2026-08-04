@@ -31,7 +31,7 @@
       <p>Model Browser Admin Interface</p>
     </div>
     <div class="login-body">
-      <form id="login-form" action="/login" method="post">
+      <form id="login-form" method="post">
         <div id="error-msg" class="error-msg"></div>
         <label for="username">Username</label>
         <input type="text" id="username" name="username" autocomplete="username" required autofocus placeholder="Enter your username" />
@@ -50,26 +50,48 @@
   var btn = document.getElementById('submit-btn');
   var errorDiv = document.getElementById('error-msg');
 
+  // If already authenticated (token in localStorage), skip login — redirect to admin.
+  if (localStorage.getItem('bpm_token')) {
+    window.location.href = '/admin';
+    return;
+  }
+
   form.addEventListener('submit', function(e) {
-    // Let the form submit normally — server handles auth and redirects.
+    e.preventDefault();
+
+    var username = document.getElementById('username').value.trim();
+    var password = document.getElementById('password').value;
+
     btn.disabled = true;
     btn.textContent = 'Signing in...';
     errorDiv.style.display = 'none';
+
+    fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ username: username, password: password })
+    })
+    .then(function(resp) { return resp.json(); })
+    .then(function(data) {
+      if (data.error) throw new Error(data.error);
+      localStorage.setItem('bpm_token', data.access_token);
+      window.location.href = '/admin';
+    })
+    .catch(function(err) {
+      errorDiv.textContent = err.message || 'Login failed.';
+      errorDiv.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    });
   });
 
   // Show error if server redirected with ?error= query param (e.g., bad credentials)
   var params = new URLSearchParams(window.location.search);
   if (params.get('error')) {
-    errorDiv.textContent = params.get('error');
+    errorDiv.textContent = decodeURIComponent(params.get('error'));
     errorDiv.style.display = 'block';
     btn.disabled = false;
     btn.textContent = 'Sign In';
-  }
-
-  // If already authenticated (cookie set), skip login — redirect to admin.
-  if (document.cookie.indexOf('bpm_session=') !== -1) {
-    var next = params.get('next') || '/admin';
-    window.location.href = next;
   }
 })();
 </script>

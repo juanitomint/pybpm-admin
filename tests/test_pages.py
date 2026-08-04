@@ -18,7 +18,7 @@ class TestIndexPage:
     def test_index_contains_api_url_config(self, sync_test_client):  # type: ignore[no-untyped-def]
         body = sync_test_client.get("/").text
         assert "apiUrl" in body
-        assert "editor_api" in body
+        assert "apiUrl" in body
 
     def test_index_contains_browser_scripts(self, sync_test_client):  # type: ignore[no-untyped-def]
         body = sync_test_client.get("/").text
