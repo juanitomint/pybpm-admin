@@ -14,8 +14,9 @@ from pathlib import Path
 import httpx
 from fastapi import FastAPI, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from config import Config
@@ -30,9 +31,13 @@ class NoCacheMiddleware:
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] == "http":
             path = scope.get("path", "")
-            should_nocache = (
-                path in ("/admin", "/", "/login", "/logout") or path.startswith("/static/jscript/")
-            )
+            should_nocache = path in (
+                "/admin",
+                "/admin2",
+                "/",
+                "/login",
+                "/logout",
+            ) or path.startswith("/static/jscript/")
 
             if not should_nocache:
                 await self.app(scope, receive, send)
@@ -55,20 +60,6 @@ class NoCacheMiddleware:
 
 
 _base_dir = Path(__file__).resolve().parent
-_login_html = (_base_dir / "login.html").read_text(encoding="utf-8")
-_admin_html = (_base_dir / "admin.html").read_text(encoding="utf-8")
-
-# HTML returned by /logout to clear bpm_token from localStorage and redirect.
-_LOGOUT_HTML = """\
-<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><title>DNA2BPM — Signing out</title></head>
-<body>
-<script>window.localStorage.removeItem("bpm_token"); window.location.href = "/login";</script>
-<noscript>You are being <a href="/login">redirected to the sign-in page</a>.</noscript>
-</body>
-</html>\
-"""
 
 
 async def _authenticate_user(username: str, password: str) -> dict | None:
@@ -95,12 +86,34 @@ async def _authenticate_user(username: str, password: str) -> dict | None:
     return None
 
 
+def _render_css(css_dict):
+    lines = []
+    for url, desc in css_dict.items():
+        lines.append(f"<!-- CSS:{desc} -->")
+        lines.append(f"<link rel='stylesheet' type='text/css' href='{url}' />")
+    return "\n".join(lines)
+
+
+def _render_js(js_dict):
+    lines = []
+    for url, desc in js_dict.items():
+        lines.append(f"<!-- JS:{desc} -->")
+        lines.append(
+            f"<script type='text/javascript'>try{{document.getElementById('loading-msg').innerHTML +="\"<span class='ok'>OK.</span><br/>Loading {desc}...\";}}catch(e){{}}</script>"
+        )
+        lines.append(f"<script type='text/javascript' src='{url}'></script>")
+    return "\n".join(lines)
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title="PyBPM Editor",
         version="0.1.0",
         openapi_url="/openapi.json",
     )
+
+    templates = Jinja2Templates(directory=str(_base_dir / "templates"))
+    # Make Jinja2 templates available in route handlers via request.app.state.templates.
 
     # CORS: allow pybpm-api origin (editor save/load) and same-origin admin calls.
     origins = [
@@ -125,10 +138,14 @@ def create_app() -> FastAPI:
         """Redirect / to /login so users always land on the sign-in page."""
         return RedirectResponse(url="/login", status_code=302)
 
-    @app.get("/login", response_class=HTMLResponse)
-    async def login_page():
+    @app.get("/login")
+    async def login_page(request: Request):
         """Serve the standalone login page."""
-        return HTMLResponse(content=_login_html)
+        return templates.TemplateResponse(
+            request=request,
+            name="login.html",
+            context={"request": request, "Config": Config},
+        )
 
     @app.post("/login")
     async def login_submit(
@@ -146,25 +163,88 @@ def create_app() -> FastAPI:
 
         return JSONResponse(content={"access_token": auth_data["access_token"]})
 
-    @app.get("/logout", response_class=HTMLResponse)
-    async def logout():
+    @app.get("/logout")
+    async def logout(request: Request):
         """Clear bpm_token from localStorage and redirect to /login."""
-        return HTMLResponse(
-            content=_LOGOUT_HTML,
+        return templates.TemplateResponse(
+            request=request,
+            name="logout.html",
+            context={"request": request},
             headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
         )
 
     @app.get("/admin")
     async def admin_editor(request: Request):
         """Render the Model Browser UI. Authentication is enforced client-side via localStorage."""
-        return HTMLResponse(content=_admin_html)
+        return templates.TemplateResponse(
+            request=request,
+            name="admin.html",
+            context={"request": request, "Config": Config},
+        )
+
+    def newb():
+        """Replicate the legacy Admin::Newb() JS/CSS/global_js arrays.
+
+        Migrated from dna2bpm/application/modules/bpm/controllers/Admin.php::Newb().
+        Returns the same data structure that was previously passed to
+        $this->ui->makeui('ext.ui-no-ion.php', $cpData).
+        """
+        base_url = "static/"
+        module_url = f"{Config.ADMIN_URL_PREFIX}/"
+
+        css_dict = {
+            f"{base_url}jscript/ext/src/ux/css/CheckHeader.css": "checkHeader",
+            f"{module_url}assets/css/load_mask.css": "loadingmask",
+            f"{module_url}assets/css/browser.css": "Browser",
+            f"{module_url}assets/css/extra-icons.css": "Extra Icons",
+        }
+
+        js_dict = {
+            f"{base_url}jscript/jquery/jquery.min.js": "JQuery",
+            #----Pan & ZooM---------------------------------------------
+            f"{module_url}assets/jscript/panzoom/jquery.panzoom.min.js": "Panzoom Minified",
+            f"{module_url}assets/jscript/panzoom/jquery.mousewheel.js": "wheel-suppport",
+            f"{module_url}assets/jscript/panzoom/pnazoom_wheel.js": "wheel script",
+            #-----------------------------------------------------------------
+            f"{module_url}assets/jscript/ext.settings.js": "Settings",
+            f"{module_url}assets/jscript/browser/data.js": "Data Objects",
+            f"{module_url}assets/jscript/browser/tree.js": "Module Tree",
+            f"{module_url}assets/jscript/browser/ext.add_events.js": "Events for overlays",
+            f"{module_url}assets/jscript/browser/center_panel.js": "Center Panel",
+            f"{module_url}assets/jscript/browser/viewport.js": "Viewport",
+        }
+
+        global_js = {
+            "base_url": base_url,
+            "module_url": module_url,
+        }
+
+        return css_dict, js_dict, global_js
+
+    @app.get("/admin2")
+    async def admin2_editor(request: Request):
+        """Render the ext-ui editor page. Uses Newb() arrays from legacy Admin."""
+        css_dict, js_dict, global_js = newb()
+
+        return templates.TemplateResponse(
+            request=request,
+            name="ext-ui.html",
+            context={
+                "request": request,
+                "title": "Model Browser",
+                "base_url": global_js["base_url"],
+                "module_url": global_js["module_url"],
+                "css": _render_css(css_dict),
+                "js": _render_js(js_dict),
+                "inline_js": global_js,
+            },
+        )
 
     @app.get("/healthz")
     async def health_check():
         return {"status": "ok", "service": "pybpm-admin"}
 
     # Disable caching for admin/editor pages (ExtJS UI must always fetch fresh assets)
-    app = NoCacheMiddleware(app)
 
     return app
 
