@@ -93,12 +93,12 @@
       '/static/jscript/browser/center_panel.js',
       '/static/jscript/browser/viewport.js'
     ];
-    
+
     // Update globals before loading browser JS (they reference these)
     globals.base_url = '/';
     globals.module_url = '/admin/';
     globals.editor_api = baseApi;
-    
+
     var loadIndex = 0;
     function loadNext() {
       if (loadIndex >= scripts.length) return;
@@ -116,14 +116,14 @@
       };
       document.head.appendChild(script);
     }
-    
+
     console.log('[app] Loading browser scripts...');
     loadNext();
   }
 
   document.getElementById('login-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     var username = document.getElementById('username').value.trim();
     var password = document.getElementById('password').value;
     var btn = document.getElementById('submit-btn');
@@ -157,7 +157,7 @@
     .then(function(data) {
       // Store token in localStorage for subsequent requests to pybpm-admin and pybpm-api
       localStorage.setItem('bpm_token', data.access_token);
-      
+
       console.log('[app] Authenticated, redirecting to editor...');
       window.location.href = '/admin?apiUrl=' + encodeURIComponent(apiUrl);
     })

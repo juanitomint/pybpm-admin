@@ -64,7 +64,7 @@ _base_dir = Path(__file__).resolve().parent
 
 async def _authenticate_user(username: str, password: str) -> dict | None:
     """Authenticate user via pybpm-api /auth/token endpoint."""
-    auth_url = Config.PYBPM_API_URL.rstrip("/") + "/auth/token"
+    auth_url = Config.PYBPM_API_URL.rstrip("/") + "/api/v1/auth/token"
     payload = {
         "grant_type": "password",
         "username": username,
@@ -99,7 +99,8 @@ def _render_js(js_dict):
     for url, desc in js_dict.items():
         lines.append(f"<!-- JS:{desc} -->")
         lines.append(
-            f"<script type='text/javascript'>try{{document.getElementById('loading-msg').innerHTML +="\"<span class='ok'>OK.</span><br/>Loading {desc}...\";}}catch(e){{}}</script>"
+            f"""<script type="text/javascript">
+try{{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</span><br/>Loading {desc}...";}}catch(e){{}}</script>"""
         )
         lines.append(f"<script type='text/javascript' src='{url}'></script>")
     return "\n".join(lines)
@@ -176,53 +177,6 @@ def create_app() -> FastAPI:
     @app.get("/admin")
     async def admin_editor(request: Request):
         """Render the Model Browser UI. Authentication is enforced client-side via localStorage."""
-        return templates.TemplateResponse(
-            request=request,
-            name="admin.html",
-            context={"request": request, "Config": Config},
-        )
-
-    def newb():
-        """Replicate the legacy Admin::Newb() JS/CSS/global_js arrays.
-
-        Migrated from dna2bpm/application/modules/bpm/controllers/Admin.php::Newb().
-        Returns the same data structure that was previously passed to
-        $this->ui->makeui('ext.ui-no-ion.php', $cpData).
-        """
-        base_url = "static/"
-        module_url = f"{Config.ADMIN_URL_PREFIX}/"
-
-        css_dict = {
-            f"{base_url}jscript/ext/src/ux/css/CheckHeader.css": "checkHeader",
-            f"{module_url}assets/css/load_mask.css": "loadingmask",
-            f"{module_url}assets/css/browser.css": "Browser",
-            f"{module_url}assets/css/extra-icons.css": "Extra Icons",
-        }
-
-        js_dict = {
-            f"{base_url}jscript/jquery/jquery.min.js": "JQuery",
-            #----Pan & ZooM---------------------------------------------
-            f"{module_url}assets/jscript/panzoom/jquery.panzoom.min.js": "Panzoom Minified",
-            f"{module_url}assets/jscript/panzoom/jquery.mousewheel.js": "wheel-suppport",
-            f"{module_url}assets/jscript/panzoom/pnazoom_wheel.js": "wheel script",
-            #-----------------------------------------------------------------
-            f"{module_url}assets/jscript/ext.settings.js": "Settings",
-            f"{module_url}assets/jscript/browser/data.js": "Data Objects",
-            f"{module_url}assets/jscript/browser/tree.js": "Module Tree",
-            f"{module_url}assets/jscript/browser/ext.add_events.js": "Events for overlays",
-            f"{module_url}assets/jscript/browser/center_panel.js": "Center Panel",
-            f"{module_url}assets/jscript/browser/viewport.js": "Viewport",
-        }
-
-        global_js = {
-            "base_url": base_url,
-            "module_url": module_url,
-        }
-
-        return css_dict, js_dict, global_js
-
-    @app.get("/admin2")
-    async def admin2_editor(request: Request):
         """Render the ext-ui editor page. Uses Newb() arrays from legacy Admin."""
         css_dict, js_dict, global_js = newb()
 
@@ -236,9 +190,49 @@ def create_app() -> FastAPI:
                 "module_url": global_js["module_url"],
                 "css": _render_css(css_dict),
                 "js": _render_js(js_dict),
-                "inline_js": global_js,
+                "Config": Config,
             },
         )
+
+    def newb():
+        """Replicate the legacy Admin::Newb() JS/CSS/global_js arrays.
+
+        Migrated from dna2bpm/application/modules/bpm/controllers/Admin.php::Newb().
+        Returns the same data structure that was previously passed to
+        $this->ui->makeui('ext.ui-no-ion.php', $cpData).
+        """
+        base_url = "static/"
+        module_url = f"{Config.ADMIN_URL_PREFIX}/"
+
+        css_dict = {
+            f"{base_url}/jscript/ext/src/ux/css/CheckHeader.css": "checkHeader",
+            f"{base_url}/css/load_mask.css": "loadingmask",
+            f"{base_url}/css/browser.css": "Browser",
+            f"{base_url}/css/extra-icons.css": "Extra Icons",
+        }
+
+        js_dict = {
+            f"{base_url}jscript/jquery/jquery.min.js": "JQuery",
+            # ----Pan & ZooM---------------------------------------------
+            f"{base_url}/jscript/panzoom/jquery.panzoom.min.js": "Panzoom Minified",
+            f"{base_url}/jscript/panzoom/jquery.mousewheel.js": "wheel-suppport",
+            f"{base_url}/jscript/panzoom/pnazoom_wheel.js": "wheel script",
+            # -----------------------------------------------------------------
+            f"{base_url}/jscript/ext.settings.js": "Settings",
+            f"{base_url}/jscript/browser/ext.model-utils.js": "Model Utils",
+            f"{base_url}/jscript/browser/data.js": "Data Objects",
+            f"{base_url}/jscript/browser/tree.js": "Module Tree",
+            f"{base_url}/jscript/browser/ext.add_events.js": "Events for overlays",
+            f"{base_url}/jscript/browser/center_panel.js": "Center Panel",
+            f"{base_url}/jscript/browser/viewport.js": "Viewport",
+        }
+
+        global_js = {
+            "base_url": base_url,
+            "module_url": module_url,
+        }
+
+        return css_dict, js_dict, global_js
 
     @app.get("/healthz")
     async def health_check():

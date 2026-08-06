@@ -19,7 +19,7 @@ No URL-mapping proxy layer — pybpm-admin owns its own routes under `/admin/*` 
 │   ├─ import_form    │     │  DELETE /delete          │
 │   └─ new_model_form │     │  POST /import            │
 │                     │     │                          │
-│  index.html         │     │  GET  /get_shapes/...    │
+│  editor.html         │     │  GET  /get_shapes/...    │
 │  (Oryx editor)      │     │  GET  /svg/{idwf}        │
 └─────────────────────┘     └──────────────────────────┘
 
