@@ -1843,7 +1843,7 @@ if (!ORYX) var ORYX = {};
 if (!ORYX.CONFIG) ORYX.CONFIG = {};
 
 //This is usually the name of the war file!
-ORYX.CONFIG.ROOT_PATH = "static/jscript/editor/";
+ORYX.CONFIG.ROOT_PATH = "static/editor/";
 ORYX.CONFIG.WEB_URL = "http://oryx-project.org";
 
 ORYX.CONFIG.VERSION_URL = ORYX.CONFIG.ROOT_PATH + "VERSION";
