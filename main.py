@@ -37,6 +37,7 @@ class NoCacheMiddleware:
                 "/",
                 "/login",
                 "/logout",
+                "/editor",
             ) or path.startswith("/static/jscript/")
 
             if not should_nocache:
@@ -172,6 +173,27 @@ def create_app() -> FastAPI:
             name="logout.html",
             context={"request": request},
             headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+
+    @app.get("/editor")
+    async def editor_page(request: Request, idwf: str | None = None):
+        """Render the Oryx-based BPMN model editor page.
+
+        Serves the full ExtJS 2.0 + Oryx editor shell with all legacy JS/CSS assets.
+        Optional ?idwf= query parameter loads an existing model by IDWF on startup.
+        """
+        return templates.TemplateResponse(
+            request=request,
+            name="editor.html",
+            context={
+                "request": request,
+                "title": "Oryx Editor",
+                "base_url": "/static/jscript/editor/",  # editor: oryx assets under static/editor/
+                "module_url": f"{Config.ADMIN_URL_PREFIX}/",
+                "apiUrl": f"{Config.PYBPM_API_URL}/",
+                "idwf": idwf or "",
+                "Config": Config,
+            },
         )
 
     @app.get("/admin")

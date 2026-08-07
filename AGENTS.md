@@ -21,6 +21,8 @@ pybpm-admin/
 ├── admin_router.py         # Admin API endpoints — mirrors legacy Admin.php controllers
 │                           # Routes: /admin/get_tree, /admin/tree/create, etc.
 ├── index.html              # Editor shell page — loads existing Oryx libraries
+├── templates/              # Jinja2 HTML templates rendered by admin endpoints
+│   └── *.html              # Form views (import_form, new_model_form, etc.)
 ├── static/                 # Exact copy of legacy Oryx assets (read-only from dna2bpm)
 │   ├── css/                # Editor stylesheets (browser.css, dna2.css, etc.)
 │   ├── images/             # Icons, SVGs, loaders
@@ -54,18 +56,20 @@ Internal helpers (`convert_to_item`, `convert_to_ext`, `explodeTree`) are reused
 
 ## Connecting to pybpm-api (Model Persistence)
 
-The Oryx editor part of the shell page communicates with `pybpm-api` for model save/load:
+The Oryx editor communicates with `pybpm-api` for model save/load. The API base URL is set via the `PYBPM_API_URL` environment variable (loaded from `.env`), which `index.html` reads at serve time and exposes as a JS global (`globals.apiUrl`) for the editor JavaScript to use:
 
 ```
-http://localhost:8080/?apiUrl=http://localhost:5000/api/v1
+.env → PYBPM_API_URL=http://localhost:5000/api/v1
+index.html bootstrap → window.globals.apiUrl = 'http://localhost:5000/api/v1'
+Oryx editor JS → fetch(globals.apiUrl + '/bpm/repository/svg/{idwf}')
 ```
 
-| Method | Endpoint (via apiUrl) | Purpose |
+| Method | Endpoint on pybpm-api | Purpose |
 |--------|----------------------|---------|
-| GET | `/bpm/repository/svg/{idwf}` | Load model SVG for rendering |
-| PUT | `/bpm/repository/save/{idwf}` | Save edited model back to API |
-| POST | `/auth/token` | Authenticate user before editing |
-| GET | `/bpm/repository/get_shapes/model/{idwf}` | Shape metadata for toolbar/stencil panel |
+| GET | `/bpm/repository/svg/{idwf}` | Load model SVG for rendering
+| PUT | `/bpm/repository/save/{idwf}` | Save edited model back to API
+| POST | `/auth/token` | Authenticate user before editing
+| GET | `/bpm/repository/get_shapes/model/{idwf}` | Shape metadata for toolbar/stencil panel
 
 The admin interface (ExtJS browser UI) calls pybpm-admin's own `/admin/*` endpoints — not pybpm-api directly.
 
@@ -77,10 +81,10 @@ The admin interface (ExtJS browser UI) calls pybpm-admin's own `/admin/*` endpoi
 # Install dependencies:
 uv sync
 
-# Run FastAPI dev server with hot reload on port 8080:
+# Set PYBPM_API_URL in .env (e.g., http://localhost:5000/api/v1)
 uv run uvicorn main:app --reload --port 8080
 
-# Then visit: http://localhost:8080/?apiUrl=http://localhost:5000/api/v1
+# Then visit: http://localhost:8080/
 ```
 
 ### With Docker
