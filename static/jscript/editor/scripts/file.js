@@ -594,10 +594,6 @@ window.onOryxResourcesLoaded = function () {
       globals.apiUrl + "/bpm/repository/load/" + location.hash.slice(1),
       {
         id: "oryx-canvas123",
-        requestHeaders: {
-          Authorization:
-            "Bearer " + (localStorage.getItem("bpm_token") || ""),
-        },
         onFailure: function (transport) {
           if (403 == transport.status || 401 == transport.status) {
             Ext.Msg.show({
