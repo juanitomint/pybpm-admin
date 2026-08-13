@@ -1,7 +1,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>{{ title }}</title>
+        <title>{{ title }} {{ base_url }} {{ module_url }}</title>
         <link
             rel="stylesheet"
             type="text/css"
@@ -60,8 +60,9 @@
             //-----declare global vars
             var globals = {
                 base_url: "/",
-                module_url: "/bpm/repository",
+                module_url: "{{api_module}}",
                 apiUrl: "{{Config.PYBPM_API_URL}}",
+                idwf: "{{idwf}}",
             };
         </script>
         <script type="text/javascript">

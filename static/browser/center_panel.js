@@ -1,6 +1,6 @@
 /*
  * Center panel
- * 
+ *
  */
 
 var ModelEdit = Ext.create('Ext.Action', {
@@ -25,7 +25,7 @@ var ModelImport= Ext.create('Ext.Action', {
             Ext.create('Ext.form.Panel', {
                 width: 400,
                 bodyPadding: 10,
-                
+
                 items: [{
                     xtype: 'fileuploadfield',
                     name: 'file',
@@ -90,7 +90,7 @@ var ModelExport= Ext.create('Ext.Action', {
             //---show message
             Ext.MessageBox.alert('Error!', "Select a model to export");
         }
-        
+
     }
 });
 
@@ -98,7 +98,7 @@ var ModelCloudExport= Ext.create('Ext.Action', {
     text:'Export',
     iconCls:'fa fa-cloud-upload',
     handler:function (){
-        
+
     }
 });
 
@@ -127,7 +127,7 @@ var ModelView = Ext.create('Ext.Action', {
     handler:function(){
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
-        
+
         if(n && n.isLeaf()){
             url= globals.module_url+'repository/view/model/'+n.data.id;
             url= globals.base_url+'bpm/assets/files/images/svg/'+n.data.id+'.svg';
@@ -179,7 +179,7 @@ var ModelManager = Ext.create('Ext.Action', {
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
         if(n && n.isLeaf()){
-            url= globals.module_url+'case_manager/browse/model/'+n.data.id;
+            url= '/manager/model/'+n.data.id;
             window.open(url);
         }
     }
@@ -225,15 +225,15 @@ var modelPanel= Ext.create('Ext.Panel', {
 //  render: load_model
 }
 });
-        
+
 var center_panel=Ext.create('Ext.panel.Panel', {
-    title: '<i class="fa fa-bpm"></i> Model Explorer',    
+    title: '<i class="fa fa-bpm"></i> Model Explorer',
     id:"center_panel",
     tbar:toolBar,
     border:2,
     layout: "fit",
     autoScroll:true,
     items: [modelPanel]
-    
-    
+
+
 });

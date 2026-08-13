@@ -6,6 +6,7 @@ Serves:
 - Redirect from / to /login
 - Logout that clears the stored token and returns to login
 - The Model Browser UI at /admin (requires authentication — client-side guard)
+- The Model Manager UI at /manager/model/{idwf} (requires authentication — client-side guard)
 """
 
 import os
@@ -38,6 +39,8 @@ class NoCacheMiddleware:
                 "/login",
                 "/logout",
                 "/editor",
+                "/manager",
+                "/manager/model",
             ) or path.startswith("/static/jscript/")
 
             if not should_nocache:
@@ -239,12 +242,71 @@ def create_app() -> FastAPI:
                 "title": "Model Browser",
                 "base_url": global_js["base_url"],
                 "module_url": global_js["module_url"],
+                "api_module": "/bpm/repository",
                 "css": _render_css(css_dict),
                 "js": _render_js(js_dict),
                 "Config": Config,
             },
         )
 
+    @app.get("/manager/model/{idwf}")
+    async def manager_model(request: Request, idwf: str):
+        """Render the Model Manager UI for a specific BPMN model.
+
+        Serves the ExtJS-based model browser/editor shell with all assets under
+        ``static/manager``. The ``idwf`` path segment identifies the loaded model.
+        Authentication is enforced client-side via localStorage.
+        """
+        base_url = "../../static/"
+        module_url = "manager/"
+
+        css_dict = {
+            f"{base_url}css/jsoneditor.min.css": "JSON Editor CSS",
+            f"{base_url}css/case_manager.css": "Manager Styles",
+            f"{base_url}css/extra-icons.css": "Extra Icons",
+            f"{base_url}css/fix_bootstrap_checkbox.css": "Fix Checkbox",
+        }
+
+        js_dict = {
+            f"{base_url}jscript/jquery/jquery.min.js": "JQuery",
+            # ----Pan & ZooM---------------------------------------------
+            f"{base_url}jscript/panzoom/jquery.panzoom.min.js": "Panzoom Minified",
+            f"{base_url}jscript/panzoom/jquery.mousewheel.js": "wheel-suppport",
+            f"{base_url}jscript/panzoom/pnazoom_wheel.js": "wheel script",
+            # -----------------------------------------------------------------
+            f"{base_url}jscript/jsoneditor.min.js": "JSON-Editor",
+            f"{base_url}{module_url}ext.settings.js": "Settings & overrides",
+            f"{base_url}jscript/fontawesome_icons.js": "FontAwesome icons",
+            f"{base_url}{module_url}ext.data.js": "data Components",
+            f"{base_url}jscript/ext/src/ux/form/SearchField.js": "Search Field",
+            f"{base_url}{module_url}ext.tokenGrid.js": "Types Grid",
+            f"{base_url}{module_url}ext.grid.js": "Grid",
+            f"{base_url}{module_url}/ext.model-utils.js": "Model utils",
+            f"{base_url}{module_url}ext.add_events.js": "Events for overlays",
+            f"{base_url}{module_url}ext.viewport.js": "viewport",
+            f"{base_url}jscript/bootstrap/js/bootstrap.min.js": "Bootstrap JS",
+        }
+
+        global_js = {
+            "base_url": base_url,
+            "module_url": module_url,
+            "idwf": idwf,
+        }
+        return templates.TemplateResponse(
+            request=request,
+            name="ext-ui.html",
+            context={
+                "request": request,
+                "title": "Model Manager",
+                "base_url": base_url,
+                "module_url": module_url,
+                "api_module": "bpm/",
+                "idwf": idwf,
+                "css": _render_css(css_dict),
+                "js": _render_js(js_dict),
+                "Config": Config,
+            },
+        )
     @app.get("/healthz")
     async def health_check():
         return {"status": "ok", "service": "pybpm-admin"}

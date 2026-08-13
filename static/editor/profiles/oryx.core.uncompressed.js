@@ -13804,12 +13804,12 @@ ORYX.Core.Shape = {
                           "xlink:href",
                         );
                         if (hrefAttr) {
-                          hrefAttr.textContent = "editor.xhtml#model/" + prop;
+                          hrefAttr.textContent = "editor#model/" + prop;
                         } else {
                           svgElem.setAttributeNS(
                             "http://www.w3.org/1999/xlink",
                             "xlink:href",
-                            "editor.xhtml#model/" + prop,
+                            "editor#model/" + prop,
                           );
                         }
                         break;

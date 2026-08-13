@@ -40,7 +40,7 @@ Ext.define('tokenModel', {
     KPI: Sum of costs of “killed” / stopped active processes
     KPI: Average time to complete task
              */
-            
+
 Ext.create('Ext.data.Store', {
     id:'filterStore',
     fields: ['filter','name'],
@@ -60,9 +60,9 @@ Ext.create('Ext.data.Store', {
         'name':'By Model'
     },
     ]
-});            
+});
 
-           
+
 var user=Ext.create('Ext.data.Store', {
     id:'owner',
     autoLoad: false,
@@ -88,10 +88,10 @@ var dgstore = Ext.create('Ext.data.Store', {
     proxy: {
         type: 'ajax',
         api: {
-            create  : globals.module_url+'case_manager/data/create/'+globals.idwf,
-            read    : globals.module_url+'case_manager/data/read/'+globals.idwf,
-            update  : globals.module_url+'case_manager/data/update/'+globals.idwf,
-            destroy : globals.module_url+'case_manager/data/destroy/'+globals.idwf        
+            create  : globals.apiUrl+'/'+globals.module_url+'case_manager/data/create/'+globals.idwf,
+            read    : globals.apiUrl+'/'+globals.module_url+'case_manager/data/read/'+globals.idwf,
+            update  : globals.apiUrl+'/'+globals.module_url+'case_manager/data/update/'+globals.idwf,
+            destroy : globals.apiUrl+'/'+globals.module_url+'case_manager/data/destroy/'+globals.idwf
         },
         url: globals.module_url+'case_manager/data/read/'+globals.idwf,  // url that will load data with respect to start and limit params
         noCache: false,
@@ -122,7 +122,7 @@ var tokenstore = Ext.create('Ext.data.Store', {
     model: 'tokenModel',
     proxy: {
         type: 'ajax',
-        url: globals.module_url+'case_manager/tokens/read/'+globals.idwf,  // url that will load data with respect to start and limit params
+        url: globals.apiUrl+globals.module_url+'case_manager/tokens/read/'+globals.idwf,  // url that will load data with respect to start and limit params
         noCache: false,
         timeout: 120*1000,//---set timeout to 120 seconds
         reader: {
@@ -134,6 +134,6 @@ var tokenstore = Ext.create('Ext.data.Store', {
             type: 'json',
             allowSingle:false
         }
-        
+
     }
 });
