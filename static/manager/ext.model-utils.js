@@ -25,8 +25,7 @@ function load_data(idwf, callback) {
       url: globals.apiUrl + "/bpm/repository" + "/load/model/" + idwf,
       disableCaching: false,
       headers: {
-          Authorization:
-              "Bearer " + (localStorage.getItem("bpm_token") || ""),
+        Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),
       },
       method: "GET",
       failure: function (response, options) {

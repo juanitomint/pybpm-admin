@@ -109,7 +109,7 @@ var mygrid = Ext.create('Ext.grid.Panel',
                     xtype: 'actioncolumn',
                     width: 30,
                     items: [{
-                            icon: globals.module_url + 'assets/images/contact-list.png', // Use a URL in the icon config
+                            icon: globals.base_url + 'static/images/contact-list.png', // Use a URL in the icon config
                             tooltip: 'miniReport',
                             handler: function(grid, rowIndex, colIndex, Item, e) {
                                 e.stopEvent();
@@ -140,7 +140,7 @@ var mygrid = Ext.create('Ext.grid.Panel',
                     xtype: 'actioncolumn',
                     width: 30,
                     items: [{
-                            icon: globals.module_url + 'assets/images/comment3_16x16.gif', // Use a URL in the icon config
+                            icon: globals.base_url + 'static/images/comment3_16x16.gif', // Use a URL in the icon config
                             tooltip: 'Process Notifications',
                             handler: function(grid, rowIndex, colIndex, Item, e) {
                                 e.stopEvent();
@@ -157,7 +157,7 @@ var mygrid = Ext.create('Ext.grid.Panel',
                     xtype: 'actioncolumn',
                     width: 30,
                     items: [{
-                            icon: globals.module_url + 'assets/images/database_16x16.gif', // Use a URL in the icon config
+                            icon: globals.base_url + 'static/images/database_16x16.gif', // Use a URL in the icon config
                             tooltip: 'Process Data',
                             handler: function(grid, rowIndex, colIndex, Item, e) {
                                 e.stopEvent();
@@ -240,7 +240,7 @@ var mygrid = Ext.create('Ext.grid.Panel',
                     xtype: 'actioncolumn',
                     width: 50,
                     items: [{
-                            icon: globals.module_url + 'assets/images/delete.png', // Use a URL in the icon config
+                            icon: globals.base_url + 'static/images/delete.png', // Use a URL in the icon config
                             tooltip: 'Remove case from DB',
                             handler: function(grid, rowIndex, colIndex) {
                                 var rec = dgstore.getAt(rowIndex);

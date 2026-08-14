@@ -295,7 +295,7 @@ var tokenGrid = Ext.create('Ext.grid.Panel', {
     stripeRows: true,
     id: 'tokenGrid',
     indexes: ['name', 'desc'],
-    //store:dgstore,    
+    //store:dgstore,
     store: Ext.getStore('tokenStore'),
     columns: [
         Ext.create('Ext.grid.RowNumberer', {
@@ -308,7 +308,7 @@ var tokenGrid = Ext.create('Ext.grid.Panel', {
             text: 'Play',
             items: [{
                 text: 'play',
-                icon: globals.module_url + 'assets/images/113.png',
+                icon: globals.base_url + 'static/images/113.png',
                 handler: function(grid, rowIndex, colIndex) {
                     var rec = tokenstore.getAt(rowIndex);
                     Ext.Msg.confirm('Confirm', 'Are you sure you want to Play: ' + rec.get('type') + '?', playShape, rec);
@@ -323,7 +323,7 @@ var tokenGrid = Ext.create('Ext.grid.Panel', {
             text: 'Revert',
             items: [{
                 text: 'Revert',
-                icon: globals.module_url + 'assets/images/118.png',
+                icon: globals.base_url + 'static/images/118.png',
                 handler: function(grid, rowIndex, colIndex) {
                     var rec = tokenstore.getAt(rowIndex);
                     Ext.Msg.confirm('Confirm', 'Are you sure you want to rewind to: ' + rec.get('type') + '?', revertTo, rec);
