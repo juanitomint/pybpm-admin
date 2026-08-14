@@ -233,7 +233,7 @@ function tokens_load_status(idwf, idcase, callback) {
     idwf = (idwf) ? idwf : globals.idwf;
     idcase = (idcase) ? idcase : globals.idcase;
     //----set url for tokens proxy
-    url = globals.module_url + 'case_manager/tokens/status/' + idwf + '/' + idcase;
+    url = globals.apiUrl + '/bpm/case_manager/tokens/status/' + idwf + '/' + idcase;
     tokenStore = Ext.getStore('tokenStore')
     tokenStore.proxy.url = url;
     tokenStore.load(callback);

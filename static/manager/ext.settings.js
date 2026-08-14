@@ -10,19 +10,16 @@ Ext.Ajax.setConfig({
     disableCaching : false
 });
 
-//---attach Bearer token to every request (incl. container.body.load)
-var bpm_token = localStorage.getItem("bpm_token") || "";
-if (bpm_token) {
-    Ext.Ajax.on("beforerequest", function () {
-        this.setHeader("Authorization", "Bearer " + bpm_token);
-    });
-}
 
 //---set ux path
 Ext.Loader.setPath('Ext.ux', globals.base_url+'jscript/ext/src/ux');
 //--- this is 4 CodeIgniter smart urls
-Ext.apply(Ext.data.AjaxProxy.prototype.actionMethods, {
-    //read: 'POST'
+Ext.apply(Ext.data.AjaxProxy.prototype.headers, {
+    Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),//read: 'POST'
+});
+
+Ext.apply(Ext.Ajax.request.prototype.headers, {
+    Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),//read: 'POST'
 });
 
 //----define cache object
