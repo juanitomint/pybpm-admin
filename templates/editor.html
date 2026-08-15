@@ -9,6 +9,15 @@
 >
     <head profile="http://purl.org/NET/erdf/profile">
         <title>Oryx-Editor - Oryx</title>
+        <!-- Globals config (must be before loading messages) -->
+        <script type="text/javascript">
+            // Set globals for editor JS after auth — browser/data.js, tree.js, viewport.js reference these.
+            var globals = {
+                base_url: "/",
+                module_url: "/bpm/repository",
+                apiUrl: "{{Config.PYBPM_API_URL}}",
+            };
+        </script>
         <!-- libraries -->
         <script
             src="{{ base_url }}lib/prototype-1.5.1.js"
@@ -65,15 +74,7 @@
         <link rel="schema.b3mn" href="http://b3mn.org" />
         <link rel="schema.oryx" href="http://oryx-editor.org/" />
         <link rel="schema.raziel" href="http://raziel.org/" />
-        <!-- Globals config (must be before loading messages) -->
-        <script type="text/javascript">
-            // Set globals for editor JS after auth — browser/data.js, tree.js, viewport.js reference these.
-            var globals = {
-                base_url: "/",
-                module_url: "/bpm/repository",
-                apiUrl: "{{Config.PYBPM_API_URL}}",
-            };
-        </script>
+
         <script type="text/javascript">
 
             if(!ORYX.CONFIG) ORYX.CONFIG = {};

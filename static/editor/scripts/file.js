@@ -25,7 +25,7 @@ if (!ORYX.Plugins) ORYX.Plugins = new Object();
 ORYX.Plugins.Save = Clazz.extend({
   facade: undefined,
 
-  processURI: "../../bpm/repository/save",
+  processURI: globals.apiUrl + "/bpm/repository/save",
 
   construct: function (facade) {
     this.facade = facade;
@@ -125,7 +125,7 @@ ORYX.Plugins.Save = Clazz.extend({
       var ss = this.facade.getStencilSets();
       var source = ss[ss.keys()[0]].source().split("stencilsets")[1];
 
-      reqURI = "../../bpm/repository/save_as";
+      reqURI = globals.apiUrl + "/bpm/repository/save_as";
 
       //reqURI = "/wokflow/repository/save_as?stencilset=/stencilsets" + source ;
     }
@@ -247,6 +247,9 @@ ORYX.Plugins.Save = Clazz.extend({
     // Send the request to the server.
     new Ajax.Request(url, {
       method: "POST",
+      requestHeaders: {
+        Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),
+      },
       asynchronous: false,
       parameters: params,
       onSuccess: function (transport) {
@@ -601,7 +604,7 @@ window.onOryxResourcesLoaded = function () {
               msg:
                 'You may not have access rights for this model, maybe you forgot to <a href="' +
                 ORYX.CONFIG.WEB_URL +
-                '/backend/poem/repository">log in</a>?',
+                '/bpm/repository">log in</a>?',
               icon: Ext.MessageBox.WARNING,
               closeable: false,
               closable: false,
