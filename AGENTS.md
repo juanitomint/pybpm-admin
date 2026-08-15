@@ -82,15 +82,10 @@ The admin interface (ExtJS browser UI) calls pybpm-admin's own `/admin/*` endpoi
 uv sync
 
 # Set PYBPM_API_URL in .env (e.g., http://localhost:5000/api/v1)
-uv run uvicorn main:app --reload --port 8080
+uv run uvicorn main:app --reload --port 8081
 
-# Then visit: http://localhost:8080/
-```
-
-### With Docker
-
-```bash
-docker compose up -d admin
+### Testing (non-interactive)
+Use `APP_PORT=8081` when running the server for testing, scripting, or tooling — keeps it off port 8080 so `make run` can stay attached to an interactive console without conflict.
 # Then visit: http://localhost:8080/
 ```
 
