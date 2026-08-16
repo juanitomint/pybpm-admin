@@ -154,8 +154,31 @@ var ModelRun = Ext.create('Ext.Action', {
         n=tree.getSelectionModel().getSelection()[0];
         //---only do something if its leaf=model
         if(n && n.isLeaf()){
-            url=globals.module_url+'engine/newcase/model/'+n.data.id;
-            window.open(url);
+            Ext.Ajax.request({
+                url: globals.apiUrl + '/bpm/engine/newcase',
+                method: 'POST',
+                headers: {
+                    Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),
+                },
+                jsonData: { idwf: n.data.id },
+                success: function (response) {
+                    var data = Ext.decode(response.responseText);
+                    if(data && data.idcase){
+                        Ext.Msg.alert('Case Created','New case ID: '+data.idcase+' (model: '+data.idwf+')');
+                        tree.store.reload();
+                    } else {
+                        Ext.Msg.alert('Warning','Unexpected response from newcase endpoint.');
+                    }
+                },
+                failure: function(response){
+                    var msg = 'Failed to create case.';
+                    try {
+                        var err = JSON.parse(response.responseText);
+                        if(err.detail) msg += '\n'+err.detail;
+                    } catch(e){}
+                    Ext.Msg.alert('Error',msg);
+                }
+            });
         }
     }
 });

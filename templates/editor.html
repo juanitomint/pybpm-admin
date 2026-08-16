@@ -18,6 +18,8 @@
                 apiUrl: "{{Config.PYBPM_API_URL}}",
             };
         </script>
+        <!-- Auth check — validates JWT token before loading Oryx editor -->
+        <script src="/static/jscript/auth.js"></script>
         <!-- libraries -->
         <script
             src="{{ base_url }}lib/prototype-1.5.1.js"
