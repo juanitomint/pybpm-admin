@@ -84,8 +84,23 @@ async def _authenticate_user(username: str, password: str) -> dict | None:
             )
             if resp.status_code == 200:
                 return resp.json()
-    except (httpx.ConnectError, httpx.TimeoutException):
-        pass
+            # Pass through pybpm-api's own status codes (401 for bad credentials)
+            from fastapi import HTTPException
+
+            raise HTTPException(
+                status_code=resp.status_code,
+                detail=f"Authentication service error: {resp.text}",
+            )
+    except httpx.ConnectError as err:
+        raise HTTPException(
+            status_code=500,
+            detail="Authentication service unavailable (backend database connection failed)",
+        ) from err
+    except httpx.TimeoutException as err:
+        raise HTTPException(
+            status_code=500,
+            detail="Authentication service timed out",
+        ) from err
 
     return None
 

@@ -18,8 +18,9 @@ async function checkAuth() {
             console.log('Authenticated:', user);
             return true;
         } else {
-            // Token expired or invalid
+            // Token expired or invalid — remove it so we don't keep retrying
             console.warn('Auth check failed:', response.status);
+            localStorage.removeItem('bpm_token');
             if (window.location.pathname !== '/login') {
                 window.location.href = '/login';
             }
@@ -27,6 +28,7 @@ async function checkAuth() {
         }
     } catch (error) {
         console.error('Auth check error:', error);
+        localStorage.removeItem('bpm_token');
         if (window.location.pathname !== '/login') {
             window.location.href = '/login';
         }

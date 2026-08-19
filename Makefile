@@ -2,7 +2,8 @@ IMAGE_REPOSITORY  ?= juanitomint/pybpm-admin
 CURRENT_DIR = $(shell pwd)
 GIT_LAST_TAG=$(shell git tag --sort=committerdate|tail -n 1)
 GIT_COMMIT=$(shell git rev-parse --short HEAD)
-
+help:
+	@grep -E '^[\/a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 .PHONY: deps
 deps: ## Install dependencies using uv
 	uv sync --dev
