@@ -137,7 +137,7 @@ def create_app() -> FastAPI:
 
     # CORS: allow pybpm-api origin (editor save/load) and same-origin admin calls.
     origins = [
-        f"http://localhost:{Config.PORT}",
+        f"http://localhost:{Config.APP_PORT}",
         "http://localhost:5000",  # pybpm-api dev server
     ]
 
@@ -338,7 +338,7 @@ def main():
     import uvicorn
 
     host = os.environ.get("HOST", "0.0.0.0")
-    port = Config.PORT
+    port = Config.APP_PORT
     reload = Config.DEBUG
     uvicorn.run(app, host=host, port=port, reload=reload)
 
