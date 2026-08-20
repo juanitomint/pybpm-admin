@@ -19,7 +19,7 @@ class Config:
     PYBPM_API_URL = os.environ.get("PYBPM_API_URL", "http://localhost:5000/api/v1")
 
     # Port the editor FastAPI app listens on.
-    PORT = int(os.environ.get("PORT", "8080"))
+    APP_PORT = int(os.environ.get("APP_PORT", "8080"))
 
     # Environment (development / production) — controls debug mode and logging verbosity.
     ENVIRONMENT = os.environ.get("ENVIRONMENT", "production")
