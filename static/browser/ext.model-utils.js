@@ -87,12 +87,37 @@ function load_model(idwf, callback) {
 
   options = {
     url: globals.apiUrl + globals.module_url + "/svg/" + idwf,
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),
+    },
     success: function () {
+      center_panel.setAutoScroll(false);
+      load_data(idwf, callback);
+    },
+  };
+
+  center_panel.body.load(options);
+}
+
+function load_json(idwf, callback) {
+  //---only do something if its leaf=model
+  center_panel = Ext.getCmp("modelPanel");
+
+  options = {
+    url: globals.apiUrl + globals.module_url + "/load/model/" + idwf,
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),
+    },
+    success: function () {
+      center_panel.setAutoScroll(true);
       load_data(idwf, callback);
     },
   };
   center_panel.body.load(options);
 }
+
 function add_lock(resourceId, data, style) {
   if (style == null) style = "default";
   div = Ext.get("overlay" + resourceId);

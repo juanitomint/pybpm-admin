@@ -140,10 +140,10 @@ var ModelDump = Ext.create('Ext.Action', {
     iconCls:'fa fa-arrow-circle-down',
     handler:function(){
         n=tree.getSelectionModel().getSelection()[0];
-        //---only do something if its leaf=model
         if(n && n.isLeaf()){
-            url= globals.module_url+'repository/json_view/model/'+n.data.id;
-            window.open(url);
+          load_json(n.data.id, function () {
+            Ext.getCmp('center_panel').setLoading(false);
+          });
         }
     }
 });
