@@ -129,9 +129,10 @@ var ModelView = Ext.create('Ext.Action', {
         //---only do something if its leaf=model
 
         if(n && n.isLeaf()){
-            url= globals.module_url+'repository/view/model/'+n.data.id;
-            url= globals.base_url+'bpm/assets/files/images/svg/'+n.data.id+'.svg';
-            window.open(url);
+          load_model(n.data.id.toString(),function(){
+              Ext.getCmp('center_panel').setLoading(false);
+
+          })
         }
     }
 });

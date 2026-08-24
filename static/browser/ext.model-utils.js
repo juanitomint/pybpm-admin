@@ -103,7 +103,7 @@ function load_model(idwf, callback) {
 function load_json(idwf, callback) {
   //---only do something if its leaf=model
   center_panel = Ext.getCmp("modelPanel");
-
+  modelPanel.setLoading(true)
   options = {
     url: globals.apiUrl + globals.module_url + "/load/model/" + idwf,
     method: "GET",
@@ -112,7 +112,7 @@ function load_json(idwf, callback) {
     },
     success: function () {
       center_panel.setAutoScroll(true);
-      load_data(idwf, callback);
+      modelPanel.setLoading(false)
     },
   };
   center_panel.body.load(options);
