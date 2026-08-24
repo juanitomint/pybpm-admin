@@ -84,7 +84,7 @@ function load_model(idwf, callback) {
   first = false;
   //---only do something if its leaf=model
   center_panel = Ext.getCmp("modelPanel");
-
+  center_panel.setLoading("Loading SVG...");
   options = {
     url: globals.apiUrl + globals.module_url + "/svg/" + idwf,
     method: "GET",
@@ -93,6 +93,7 @@ function load_model(idwf, callback) {
     },
     success: function () {
       center_panel.setAutoScroll(false);
+      center_panel.setLoading(false);
       load_data(idwf, callback);
     },
   };
@@ -103,7 +104,7 @@ function load_model(idwf, callback) {
 function load_json(idwf, callback) {
   //---only do something if its leaf=model
   center_panel = Ext.getCmp("modelPanel");
-  modelPanel.setLoading(true)
+  center_panel.setLoading("Loading JSON...");
   options = {
     url: globals.apiUrl + globals.module_url + "/load/model/" + idwf,
     method: "GET",
