@@ -127,7 +127,7 @@ try{{document.getElementById('loading-msg').innerHTML +="<span class='ok'>OK.</s
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="PyBPM Editor",
+        title="PyBPM Admin",
         version="0.1.0",
         openapi_url="/openapi.json",
     )
@@ -264,6 +264,44 @@ def create_app() -> FastAPI:
             },
         )
 
+
+    @app.get("/rbac")
+    async def rbac_page(request: Request):
+        """Render the RBAC Admin UI (groups, users, permissions)."""
+        base_url = "static/"
+        module_url = "rbac/"
+
+        css_dict = {
+            f"{base_url}jscript/ext/src/ux/css/CheckHeader.css": "checkHeader",
+            f"{base_url}css/admin.css": "Admin css",
+            f"{base_url}css/load_mask.css": "loadingmask",
+        }
+
+        js_dict = {
+            f"{base_url}/{module_url}ext.settings.js": "Settings",
+            f"{base_url}/{module_url}data.js": "Group Data Objects",
+            f"{base_url}jscript/ext/src/ux/form/SearchField.js": "Search Field",
+            f"{base_url}/{module_url}dataview.js": "Data View",
+            f"{base_url}/{module_url}tree.js": "Perm Tree",
+            f"{base_url}/{module_url}grid.js": "Users Grid",
+            f"{base_url}/{module_url}userform.js": "Users Edit Form",
+            f"{base_url}/{module_url}app.js": "Viewport",
+        }
+
+        return templates.TemplateResponse(
+            request=request,
+            name="rbac.html",
+            context={
+                "request": request,
+                "title": "RBAC Admin",
+                "base_url": base_url,
+                "module_url": module_url,
+                "api_url": Config.PYBPM_API_URL,
+                "css": _render_css(css_dict),
+                "js": _render_js(js_dict),
+                "Config": Config,
+            },
+        )
     @app.get("/manager/model/{idwf}")
     async def manager_model(request: Request, idwf: str):
         """Render the Model Manager UI for a specific BPMN model.

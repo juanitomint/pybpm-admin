@@ -1,0 +1,18 @@
+/* 
+    Document   : login
+    Created on : Mar 5, 2013, 10:40:40 AM
+    Author     : juanb
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+html, body {
+background-color:#CECECE;
+}
+
+.body .alert{
+	margin:0px;
+word-break: break-all;
+	
+}
+
