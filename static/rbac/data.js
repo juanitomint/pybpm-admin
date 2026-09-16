@@ -128,15 +128,9 @@ Ext.create('Ext.data.TreeStore', {
         headers: {
             'Authorization': 'Bearer ' + (localStorage.getItem('bpm_token') || '')
         },
-        api: {
-            create: globals.apiUrl + '/rbac/repository',
-            read: globals.apiUrl + '/rbac/repository',
-            update: globals.apiUrl + '/rbac/repository',
-            destroy: globals.apiUrl + '/rbac/repository'
-        },
         reader: {
             type: 'json',
-            root: 'tree'
+            root: 'data'
         }
     },
     sorters: [{

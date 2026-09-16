@@ -368,9 +368,9 @@ Ext.onReady(function () {
           var idgroup = sel[0].get("idgroup");
           tree.setLoading("Saving");
           Ext.Ajax.request({
-            url: globals.apiUrl + "/admin/rbac/repository/save",
-            method: "POST",
-            params: { idgroup: idgroup, paths: paths },
+            url: globals.apiUrl + "/rbac/repository",
+            method: "PUT",
+            params: { idgroup: idgroup, paths: paths.join(",") },
             success: function () {
               tree.setLoading(false);
             },
