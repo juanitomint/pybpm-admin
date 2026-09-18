@@ -125,7 +125,7 @@ Ext.create("Ext.data.TreeStore", {
   id: "TreeStore",
   autoLoad: false,
   proxy: {
-    type: "rest",
+    type: "ajax",
     url: globals.apiUrl + "/rbac/repository",
     headers: {
       Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),
