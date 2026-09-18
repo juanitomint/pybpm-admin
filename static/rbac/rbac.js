@@ -42,7 +42,7 @@ Ext.onReady(function () {
         if (record) {
           var idgroup = record.data.idgroup;
           // Load tree and users for this group
-          Ext.data.StoreManager.lookup("RbacTreeStore").load({
+          Ext.data.StoreManager.lookup("TreeStore").load({
             params: { idgroup: idgroup },
             callback: function () {
               // Load paths and merge granted status
@@ -55,7 +55,7 @@ Ext.onReady(function () {
                   var paths = data.paths || [];
                   var grantedPaths = {};
                   paths.forEach(function (p) { grantedPaths[p] = true; });
-                  var fullTree = Ext.data.StoreManager.lookup("RbacTreeStore");
+                  var fullTree = Ext.data.StoreManager.lookup("TreeStore");
                   var root = fullTree.getRootNode();
                   if (!root) return;
                   function markGranted(node) {
@@ -139,7 +139,7 @@ Ext.onReady(function () {
                   method: "DELETE",
                   success: function () {
                     groupStore.load();
-                    Ext.data.StoreManager.lookup("RbacTreeStore").load();
+                    Ext.data.StoreManager.lookup("TreeStore").load();
                   },
                   failure: function () {
                     Ext.Msg.alert("Error", "Failed to delete group");
@@ -298,14 +298,14 @@ Ext.onReady(function () {
   // ============================================================
   // Permissions Tree (tab panel item)
   // ============================================================
-  var treeStore = Ext.data.StoreManager.lookup("RbacTreeStore");
+  var treeStore = Ext.data.StoreManager.lookup("TreeStore");
 
   var tree = Ext.create("Ext.tree.Panel", {
     id: "PermTree",
     title: "Permissions",
     store: treeStore,
     region: "center",
-    rootVisible: true,
+    expandRoot: true,
     useArrows: true,
     frame: false,
     animate: false,
@@ -384,7 +384,7 @@ Ext.onReady(function () {
       {
         text: "Reload",
         handler: function () {
-          Ext.data.StoreManager.lookup("RbacTreeStore").load();
+          Ext.data.StoreManager.lookup("TreeStore").load();
           tree.uncheck_all();
         },
       },
@@ -419,6 +419,13 @@ Ext.onReady(function () {
       id: "mainTabPanel",
       activeTab: 0,
       items: [mygrid, tree],
+      listeners: {
+        tabchange: function (tabpanel, tab) {
+          if (tab.id === "PermTree") {
+            Ext.data.StoreManager.lookup("TreeStore").load();
+          }
+        },
+      },
     },
   });
 
@@ -674,7 +681,7 @@ Ext.onReady(function () {
     listeners: {
       afterrender: function () {
         Ext.data.StoreManager.lookup("RbacGroupStore").clearFilter();
-        Ext.data.StoreManager.lookup("RbacTreeStore").load();
+        Ext.data.StoreManager.lookup("TreeStore").load();
       },
     },
   });

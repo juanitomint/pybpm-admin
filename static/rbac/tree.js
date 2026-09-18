@@ -99,6 +99,7 @@ var saveTree = Ext.create('Ext.Action', {
                             method: 'PUT',
             // define a handler for request success
             params: {
+                //---get the active group
                 'idgroup': dataview.selModel.getLastSelected().data.idgroup,
                 'paths': paths
             },
@@ -140,7 +141,7 @@ function uncheck_all() {
 
 //---load checked nodes
 function load_checked() {
-    
+
         idgroup = dataview.selModel.getLastSelected().data.idgroup;
         tree.uncheck_all();
         paths = [];
