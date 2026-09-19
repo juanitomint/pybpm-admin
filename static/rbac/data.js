@@ -126,6 +126,7 @@ Ext.create("Ext.data.TreeStore", {
   autoLoad: false,
   proxy: {
     type: "rest",
+    noCache: false, //---get rid of the ?dc=.... in urls
     url: globals.apiUrl + "/rbac/repository",
     headers: {
       Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),
