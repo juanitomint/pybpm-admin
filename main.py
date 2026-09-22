@@ -34,13 +34,13 @@ class NoCacheMiddleware:
             path = scope.get("path", "")
             should_nocache = path in (
                 "/admin",
-                "/admin2",
                 "/",
                 "/login",
                 "/logout",
                 "/editor",
                 "/manager",
                 "/manager/model",
+                "/rbac",
             ) or path.startswith("/static/jscript/")
 
             if not should_nocache:
