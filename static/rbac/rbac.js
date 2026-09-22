@@ -358,7 +358,7 @@ Ext.onReady(function () {
           var records = tree.getView().getChecked();
           var paths = [];
           Ext.Array.each(records, function (rec) {
-            paths.push(rec.data.id);
+            paths.push(rec.data.id.replace(/\\/g, '/').replace(/^root\//, ''));
           });
           var sel = groupStore.getSelection();
           if (sel.length === 0) {

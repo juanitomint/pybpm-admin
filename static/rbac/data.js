@@ -124,6 +124,7 @@ function onTreeStoreLoad() {
 Ext.create("Ext.data.TreeStore", {
   id: "TreeStore",
   autoLoad: false,
+  batchUpdateMode: "complete",
   proxy: {
     type: "rest",
     noCache: false, //---get rid of the ?dc=.... in urls
