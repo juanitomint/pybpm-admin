@@ -2,6 +2,7 @@ IMAGE_REPOSITORY  ?= juanitomint/pybpm-admin
 CURRENT_DIR = $(shell pwd)
 GIT_LAST_TAG=$(shell git tag --sort=committerdate|tail -n 1)
 GIT_COMMIT=$(shell git rev-parse --short HEAD)
+IMAGE_TAG ?= $(if $(GIT_LAST_TAG),$(GIT_LAST_TAG),$(GIT_COMMIT))
 help:
 	@grep -E '^[\/a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 .PHONY: deps
@@ -11,10 +12,6 @@ deps: ## Install dependencies using uv
 .PHONY: run
 run: ## Run the FastAPI development server locally
 	.venv/bin/python -m uvicorn main:app --reload --port 8080
-
-.PHONY: migrate
-migrate: ## Run database migrations
-	.venv/bin/python -m alembic upgrade head
 
 .PHONY: test
 test: ## Run all tests
@@ -29,13 +26,25 @@ fix: ## Fix code lints using ruff
 	uv run --with ruff ruff check --fix .
 	uv run --with ruff ruff format ./
 
-.PHONY: stop
-stop: ## Stop admin container
-	docker compose down admin
+.PHONY: docker-build
+docker-build: ## Build docker image using latest as cache
+	echo "building: ${IMAGE_REPOSITORY}:${IMAGE_TAG}"
+	DOCKER_BUILDKIT=1 docker build -t ${IMAGE_REPOSITORY}:latest . --build-arg IMAGE_TAG=${IMAGE_TAG}
+	docker tag ${IMAGE_REPOSITORY}:latest ${IMAGE_REPOSITORY}:${IMAGE_TAG}
 
-.PHONY: logs
-logs: ## Show admin container logs (tail, follow mode)
-	docker compose logs -f admin
+.PHONY: docker-push
+docker-push: ## Push docker image to remote ${IMAGE_REPOSITORY}
+	docker push ${IMAGE_REPOSITORY}:${IMAGE_TAG}
+	docker push ${IMAGE_REPOSITORY}:latest
+
+.PHONY: docker-test
+docker-test: ## Test using docker image with .env variables
+	docker run -it --rm -v ${CURRENT_DIR}:/workspace --env-file .env --net=host ${IMAGE_REPOSITORY}:latest
+
+.PHONY: docker-shell
+docker-shell: ## Test using docker image with .env variables and execute shell
+	docker run -it --rm -v ${CURRENT_DIR}:/workspace --env-file .env --net=host ${IMAGE_REPOSITORY}:latest bash
+
 
 .PHONY: info
 info: ## Print admin build info and status
@@ -47,28 +56,8 @@ info: ## Print admin build info and status
 	@echo "--- Container status ---"
 	@docker ps --filter name=pybpm-admin --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" || true
 
-.PHONY: compose-up
-compose-up: ## Start admin (detached, removes orphaned containers)
-	docker compose up -d --remove-orphans
-
-.PHONY: compose-down
-compose-down: ## Stop and remove admin containers and resources
-	docker compose down --remove-orphans
-
-.PHONY: docker-build
-docker-build: ## Build admin image using latest as cache
-	echo "building: ${IMAGE_REPOSITORY}:${IMAGE_TAG}"
-	DOCKER_BUILDKIT=1 docker build -t ${IMAGE_REPOSITORY}:latest . --build-arg IMAGE_TAG=${IMAGE_TAG}
-	docker tag ${IMAGE_REPOSITORY}:latest ${IMAGE_REPOSITORY}:${IMAGE_TAG}
-
-.PHONY: docker-push
-docker-push: ## Push admin image to remote ${IMAGE_REPOSITORY}
-	docker push ${IMAGE_REPOSITORY}:${IMAGE_TAG}
-	docker push ${IMAGE_REPOSITORY}:latest
-
 .PHONY: clean
 clean: ## Remove admin container and dangling images
-	docker compose down --rmi local --remove-orphans
 	rm -rf ./.venv
 	rm -rf ./.pytest_cache
 	rm -rf ./**/__pycache__

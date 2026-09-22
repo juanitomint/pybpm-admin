@@ -1,20 +1,21 @@
-FROM python:3.12-slim AS runtime
+FROM python:3.14-slim AS base
 
+ENV LOG_FORMATTER=json \
+    DEBIAN_FRONTEND=noninteractive
+ENV APP_PORT=8080
+ENV APP_EXTRA=""
+
+RUN pip install --quiet uv
+
+FROM base AS deps
 WORKDIR /app
+COPY pyproject.toml uv.lock ./
+RUN uv sync
 
-# Install system deps then Python deps via uv
-RUN apt-get update && apt-get install -y --no-install-recommends curl && \
-    curl -LsSf https://astral.sh/uv/install.sh | sh && \
-    rm -rf /var/lib/apt/lists/*
-
-ENV PATH="/root/.local/bin:$PATH"
-
-COPY pyproject.toml ./
-RUN uv sync --frozen
-
+FROM deps AS runtime
+ENV PATH="/app/.venv/bin:$PATH"
+WORKDIR /app
+COPY --from=deps /app/.venv /.venv
 COPY . .
-
-# Run with uvicorn on port 8080 (matches docker-compose port mapping)
-EXPOSE 8080
-
-CMD ["uv", "run", "python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+EXPOSE ${APP_PORT}
+CMD ["/app/boot.sh"]
