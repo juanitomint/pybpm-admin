@@ -1,1 +1,707 @@
-{"resourceId":"test-gateway_eventbased","properties":{"name":"Test Event Base Gateway","documentation":"This case demonstrates the use of event based the events after gateway detemines wich flow will get fired an all the others get canceled","auditing":"","monitoring":"","version":"1","author":"Juan Ignacio Borda","language":"english","namespaces":"","targetnamespace":"http:\/\/www.omg.org\/bpmn20","expressionlanguage":"http:\/\/www.w3.org\/1999\/XPath","typelanguage":"http:\/\/www.w3.org\/2001\/XMLSchema","creationdate":"2015-01-08T00:00:00","modificationdate":"2016-01-18T00:00:00"},"stencil":{"id":"BPMNDiagram"},"childShapes":[{"resourceId":"oryx_D1AE7F97-4591-407C-B3C1-B52E3E869F85","properties":{"name":"Start","documentation":"","auditing":"","monitoring":"","eventdefinitionref":"","eventdefinitions":"","dataoutputassociations":"","dataoutput":"","outputset":"","bgcolor":"#b8d070","trigger":"None"},"stencil":{"id":"StartNoneEvent"},"childShapes":[],"outgoing":[{"resourceId":"oryx_7DDD5044-245F-426E-B1FD-6F35F0B7EB83"}],"bounds":{"lowerRight":{"x":105,"y":332},"upperLeft":{"x":75,"y":302}},"dockers":[]},{"resourceId":"oryx_2D134BC1-6031-4E33-A07E-2D9746CBAEF6","properties":{"type":"http:\/\/b3mn.org\/stencilset\/bpmn2.0#Exclusive_Databased_Gateway","xortype":"Data","markervisible":"true","defaultgate":"","gate_outgoingsequenceflow":"","gate_assignments":"","gatewaytype":"AND","name":"Event Based Gateway","documentation":"","auditing":"","monitoring":"","categories":"","assignments":"","pool":"","lanes":"","gates":"","gates_outgoingsequenceflow":"","gates_assignments":"","bgcolor":"#d0ce70","eventtype":"exclusive"},"stencil":{"id":"EventbasedGateway"},"childShapes":[],"outgoing":[{"resourceId":"oryx_628B7094-755E-4DD3-9712-21D2464B8CD7"},{"resourceId":"oryx_BF0B15CC-4433-4B1C-853F-9773DEB518AC"},{"resourceId":"oryx_B3178BC8-E583-4634-B0D2-31BC3C9823DB"}],"bounds":{"lowerRight":{"x":324,"y":337},"upperLeft":{"x":284,"y":297}},"dockers":[]},{"resourceId":"oryx_628B7094-755E-4DD3-9712-21D2464B8CD7","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_B12F0F31-6C35-4264-B2E8-476597377518"}],"bounds":{"lowerRight":{"x":415.17578125,"y":296.96875},"upperLeft":{"x":304.5,"y":255}},"dockers":[{"x":20.5,"y":20.5},{"x":304.5,"y":255},{"x":15,"y":15}],"target":{"resourceId":"oryx_B12F0F31-6C35-4264-B2E8-476597377518"}},{"resourceId":"oryx_BF0B15CC-4433-4B1C-853F-9773DEB518AC","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_305C57D0-320A-4F91-B7C8-F91F3D24BDE5"}],"bounds":{"lowerRight":{"x":414.29296875,"y":375},"upperLeft":{"x":304.5,"y":337.3671875}},"dockers":[{"x":20.5,"y":20.5},{"x":304.5,"y":375},{"x":15,"y":15}],"target":{"resourceId":"oryx_305C57D0-320A-4F91-B7C8-F91F3D24BDE5"}},{"resourceId":"oryx_B12F0F31-6C35-4264-B2E8-476597377518","properties":{"datainput":"","eventdefinitionref":"","inputset":"","type":"http:\/\/b3mn.org\/stencilset\/bpmn2.0#IntermediateEvent","eventdefinitions":"","datainputassociations":"","name":"M1","documentation":"","auditing":"","monitoring":"","isinterrupting":true,"boundarycancelactivity":"","bgcolor":"#ffffff","trigger":"Message"},"stencil":{"id":"IntermediateMessageEventCatching"},"childShapes":[],"outgoing":[{"resourceId":"oryx_124EB144-52B1-4BFA-B9E6-D62EEA7CB478"}],"bounds":{"lowerRight":{"x":446,"y":270},"upperLeft":{"x":416,"y":240}},"dockers":[{"x":431,"y":255}]},{"resourceId":"oryx_7DDD5044-245F-426E-B1FD-6F35F0B7EB83","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_D9099771-4D54-4292-A2ED-E1D7D38E8677"}],"bounds":{"lowerRight":{"x":149.37501928882,"y":317.36878893968},"upperLeft":{"x":105.46482446118,"y":317.09605481032}},"dockers":[{"x":15,"y":15},{"x":20.5,"y":20.5}],"target":{"resourceId":"oryx_D9099771-4D54-4292-A2ED-E1D7D38E8677"}},{"resourceId":"oryx_D9099771-4D54-4292-A2ED-E1D7D38E8677","properties":{"markervisible":"true","defaultgate":"","gate_outgoingsequenceflow":"","gate_assignments":"","type":"http:\/\/b3mn.org\/stencilset\/bpmn2.0#Exclusive_Databased_Gateway","xortype":"Data","name":"","documentation":"","auditing":"","monitoring":"","categories":"","assignments":"","pool":"","lanes":"","gates":"","gates_outgoingsequenceflow":"","gates_assignments":"","bgcolor":"#d0ce70","gatewaytype":"AND"},"stencil":{"id":"ParallelGateway"},"childShapes":[],"outgoing":[{"resourceId":"oryx_00183EA3-88CC-4D8E-856C-7F4F616854E3"},{"resourceId":"oryx_D03380B5-984B-4CF4-907E-739EDBF0D59F"}],"bounds":{"lowerRight":{"x":190,"y":337},"upperLeft":{"x":150,"y":297}},"dockers":[]},{"resourceId":"oryx_00183EA3-88CC-4D8E-856C-7F4F616854E3","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_2D134BC1-6031-4E33-A07E-2D9746CBAEF6"}],"bounds":{"lowerRight":{"x":284.22656951363,"y":317.42594220792},"upperLeft":{"x":190.27343048637,"y":317.07405779208}},"dockers":[{"x":20.5,"y":20.5},{"x":20,"y":20}],"target":{"resourceId":"oryx_2D134BC1-6031-4E33-A07E-2D9746CBAEF6"}},{"resourceId":"oryx_D03380B5-984B-4CF4-907E-739EDBF0D59F","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":false},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_CE1E5B64-16AF-482C-9F1B-D3340B8DB38E"}],"bounds":{"lowerRight":{"x":269.6875,"y":296.87109375},"upperLeft":{"x":170.5,"y":150}},"dockers":[{"x":20.5,"y":20.5},{"x":170.5,"y":150},{"x":15,"y":15}],"target":{"resourceId":"oryx_CE1E5B64-16AF-482C-9F1B-D3340B8DB38E"}},{"resourceId":"oryx_231EB29B-614D-4F8A-9983-A95B29D0713F","properties":{"name":"","documentation":"","auditing":"","monitoring":"","categories":"","assignments":"","pool":"","lanes":"","gates":"","gates_outgoingsequenceflow":"","gates_assignments":"","bgcolor":"#d0ce70","gatewaytype":"XOR","xortype":"Data","markervisible":"true","defaultgate":"","gate_outgoingsequenceflow":"","gate_assignments":""},"stencil":{"id":"Exclusive_Databased_Gateway"},"childShapes":[],"outgoing":[{"resourceId":"oryx_57702FEC-9642-47FD-952B-BAD5B9C965C4"}],"bounds":{"lowerRight":{"x":580,"y":337},"upperLeft":{"x":540,"y":297}},"dockers":[]},{"resourceId":"oryx_124EB144-52B1-4BFA-B9E6-D62EEA7CB478","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_231EB29B-614D-4F8A-9983-A95B29D0713F"}],"bounds":{"lowerRight":{"x":560.5,"y":296.96875},"upperLeft":{"x":446.1640625,"y":255}},"dockers":[{"x":15,"y":15},{"x":560.5,"y":255},{"x":20.5,"y":20.5}],"target":{"resourceId":"oryx_231EB29B-614D-4F8A-9983-A95B29D0713F"}},{"resourceId":"oryx_7E7AEDC8-E28F-4AC8-B2A6-E66B1CF01A5E","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_231EB29B-614D-4F8A-9983-A95B29D0713F"}],"bounds":{"lowerRight":{"x":560,"y":375},"upperLeft":{"x":445.21875,"y":337.03125}},"dockers":[{"x":15,"y":15},{"x":560,"y":375},{"x":20,"y":20}],"target":{"resourceId":"oryx_231EB29B-614D-4F8A-9983-A95B29D0713F"}},{"resourceId":"oryx_305C57D0-320A-4F91-B7C8-F91F3D24BDE5","properties":{"datainput":"","eventdefinitionref":"","inputset":"","type":"http:\/\/b3mn.org\/stencilset\/bpmn2.0#IntermediateEvent","eventdefinitions":"","datainputassociations":"","name":"+10 min","documentation":"","auditing":"","monitoring":"","isinterrupting":true,"boundarycancelactivity":"","bgcolor":"#ffffff","trigger":"Timer"},"stencil":{"id":"IntermediateTimerEvent"},"childShapes":[],"outgoing":[{"resourceId":"oryx_7E7AEDC8-E28F-4AC8-B2A6-E66B1CF01A5E"}],"bounds":{"lowerRight":{"x":445,"y":390},"upperLeft":{"x":415,"y":360}},"dockers":[{"x":430,"y":375}]},{"resourceId":"oryx_57702FEC-9642-47FD-952B-BAD5B9C965C4","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A"}],"bounds":{"lowerRight":{"x":624.578125,"y":318.5},"upperLeft":{"x":580.09375,"y":316.5}},"dockers":[{"x":20.5,"y":20.5},{"x":20.5,"y":20.5}],"target":{"resourceId":"oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A"}},{"resourceId":"oryx_81B33D7A-FDEC-4126-8DA6-3AC8B31BD5BD","properties":{"name":"END","documentation":"","auditing":"","monitoring":"","eventdefinitionref":"","eventdefinitions":"","datainputassociations":"","datainput":"","inputset":"","bgcolor":"#d07070","trigger":"None"},"stencil":{"id":"EndNoneEvent"},"childShapes":[],"outgoing":[],"bounds":{"lowerRight":{"x":738,"y":331},"upperLeft":{"x":710,"y":303}},"dockers":[]},{"resourceId":"oryx_F47150BC-00F4-4162-A832-771EA44A773C","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_81B33D7A-FDEC-4126-8DA6-3AC8B31BD5BD"}],"bounds":{"lowerRight":{"x":709.50783278418,"y":317.37644320245},"upperLeft":{"x":664.89841721582,"y":317.09230679755}},"dockers":[{"x":20.5,"y":20.5},{"x":14,"y":14}],"target":{"resourceId":"oryx_81B33D7A-FDEC-4126-8DA6-3AC8B31BD5BD"}},{"resourceId":"oryx_3EA5ED97-E9B6-4F82-80A4-E9EC50579C12","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A"}],"bounds":{"lowerRight":{"x":645,"y":297.08203125},"upperLeft":{"x":300.0625,"y":150}},"dockers":[{"x":15,"y":15},{"x":645,"y":150},{"x":20,"y":20}],"target":{"resourceId":"oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A"}},{"resourceId":"oryx_B3178BC8-E583-4634-B0D2-31BC3C9823DB","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_3606D034-B3D4-461A-8580-8BBCCEBDBC33"}],"bounds":{"lowerRight":{"x":415.17578125,"y":465},"upperLeft":{"x":304.5,"y":337.513671875}},"dockers":[{"x":20.5,"y":20.5},{"x":304.5,"y":465},{"x":15,"y":15}],"target":{"resourceId":"oryx_3606D034-B3D4-461A-8580-8BBCCEBDBC33"}},{"resourceId":"oryx_FA2340DC-1BE6-4C2A-9D6D-B3DDEE7E4695","properties":{"name":"","documentation":"","auditing":"","monitoring":"","conditiontype":"None","conditionexpression":"","isimmediate":"","showdiamondmarker":""},"stencil":{"id":"SequenceFlow"},"childShapes":[],"outgoing":[{"resourceId":"oryx_231EB29B-614D-4F8A-9983-A95B29D0713F"}],"bounds":{"lowerRight":{"x":560,"y":465},"upperLeft":{"x":446.109375,"y":337.078125}},"dockers":[{"x":15,"y":15},{"x":560,"y":465},{"x":20,"y":20}],"target":{"resourceId":"oryx_231EB29B-614D-4F8A-9983-A95B29D0713F"}},{"resourceId":"oryx_3606D034-B3D4-461A-8580-8BBCCEBDBC33","properties":{"eventdefinitionref":"","eventdefinitions":"","datainputassociations":"","type":"http:\/\/b3mn.org\/stencilset\/bpmn2.0#IntermediateEvent","datainput":"","inputset":"","name":"Cancel Me","documentation":"","auditing":"","monitoring":"","isinterrupting":true,"boundarycancelactivity":"","bgcolor":"#ffffff","trigger":"Message"},"stencil":{"id":"IntermediateMessageEventCatching"},"childShapes":[],"outgoing":[{"resourceId":"oryx_FA2340DC-1BE6-4C2A-9D6D-B3DDEE7E4695"}],"bounds":{"lowerRight":{"x":446,"y":480},"upperLeft":{"x":416,"y":450}},"dockers":[{"x":431,"y":465}]},{"resourceId":"oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A","properties":{"markervisible":"true","defaultgate":"","gate_outgoingsequenceflow":"","gate_assignments":"","xortype":"Data","type":"http:\/\/b3mn.org\/stencilset\/bpmn2.0#Exclusive_Databased_Gateway","name":"","documentation":"","auditing":"","monitoring":"","categories":"","assignments":"","pool":"","lanes":"","gates":"","gates_outgoingsequenceflow":"","gates_assignments":"","bgcolor":"#d0ce70","gatewaytype":"AND"},"stencil":{"id":"ParallelGateway"},"childShapes":[],"outgoing":[{"resourceId":"oryx_F47150BC-00F4-4162-A832-771EA44A773C"}],"bounds":{"lowerRight":{"x":665,"y":337},"upperLeft":{"x":625,"y":297}},"dockers":[]},{"resourceId":"oryx_CE1E5B64-16AF-482C-9F1B-D3340B8DB38E","properties":{"type":"http:\/\/b3mn.org\/stencilset\/bpmn2.0#IntermediateMessageEventThrowing","entry":"fondyfpp","name":"M1","documentation":"","auditing":"","monitoring":"","eventdefinitionref":"","eventdefinitions":"","datainputassociations":"","datainput":"","inputset":"","bgcolor":"#ffffff","trigger":"Message"},"stencil":{"id":"IntermediateMessageEventThrowing"},"childShapes":[],"outgoing":[{"resourceId":"oryx_3EA5ED97-E9B6-4F82-80A4-E9EC50579C12"},{"resourceId":"oryx_A5E85A28-442A-4708-8DC8-9B62FF36BC7C"}],"bounds":{"lowerRight":{"x":300,"y":165},"upperLeft":{"x":270,"y":135}},"dockers":[{"x":285,"y":150}]},{"resourceId":"oryx_0864B939-7F21-4381-A864-320A64FB18D1","properties":{"name":"","documentation":"","auditing":"","monitoring":"","categories":"","pool":"","lanes":"","text":"This message will trigger the top flow on the conditional events","artifacttype":"Annotation"},"stencil":{"id":"TextAnnotation"},"childShapes":[],"outgoing":[],"bounds":{"lowerRight":{"x":551,"y":101},"upperLeft":{"x":330,"y":39}},"dockers":[]},{"resourceId":"oryx_A5E85A28-442A-4708-8DC8-9B62FF36BC7C","properties":{"assignments":"","transformation":"","type":" "},"stencil":{"id":"Association_Undirected"},"childShapes":[],"outgoing":[{"resourceId":"oryx_0864B939-7F21-4381-A864-320A64FB18D1"}],"bounds":{"lowerRight":{"x":329.86341835701,"y":136.441638513},"upperLeft":{"x":292.87900351798,"y":72.798048986996}},"dockers":[{"x":15,"y":15},{"x":2.21,"y":29.76}],"target":{"resourceId":"oryx_0864B939-7F21-4381-A864-320A64FB18D1"}}],"bounds":{"lowerRight":{"x":1485,"y":1050},"upperLeft":{"x":0,"y":0}},"stencilset":{"url":"..\/..\/jscript\/bpm-dna2\/stencilsets\/bpmn2.0\/bpmn2.0_2.json","namespace":"http:\/\/b3mn.org\/stencilset\/bpmn2.0#"},"ssextensions":[]}
+{
+  "resourceId": "test-gateway_eventbased",
+  "properties": {
+    "name": "Test Event Base Gateway",
+    "documentation": "This case demonstrates the use of event based the events after gateway detemines wich flow will get fired an all the others get canceled",
+    "auditing": "",
+    "monitoring": "",
+    "version": "1",
+    "author": "Juan Ignacio Borda",
+    "language": "english",
+    "namespaces": "",
+    "targetnamespace": "http:\/\/www.omg.org\/bpmn20",
+    "expressionlanguage": "http:\/\/www.w3.org\/1999\/XPath",
+    "typelanguage": "http:\/\/www.w3.org\/2001\/XMLSchema",
+    "creationdate": "2015-01-08T00:00:00",
+    "modificationdate": "2016-01-18T00:00:00"
+  },
+  "stencil": { "id": "BPMNDiagram" },
+  "childShapes": [
+    {
+      "resourceId": "oryx_D1AE7F97-4591-407C-B3C1-B52E3E869F85",
+      "properties": {
+        "name": "Start",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "eventdefinitionref": "",
+        "eventdefinitions": "",
+        "dataoutputassociations": "",
+        "dataoutput": "",
+        "outputset": "",
+        "bgcolor": "#b8d070",
+        "trigger": "None"
+      },
+      "stencil": { "id": "StartNoneEvent" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_7DDD5044-245F-426E-B1FD-6F35F0B7EB83" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 105, "y": 332 },
+        "upperLeft": { "x": 75, "y": 302 }
+      },
+      "dockers": []
+    },
+    {
+      "resourceId": "oryx_2D134BC1-6031-4E33-A07E-2D9746CBAEF6",
+      "properties": {
+        "type": "http:\/\/b3mn.org\/stencilset\/bpmn2.0#Exclusive_Databased_Gateway",
+        "xortype": "Data",
+        "markervisible": "true",
+        "defaultgate": "",
+        "gate_outgoingsequenceflow": "",
+        "gate_assignments": "",
+        "gatewaytype": "AND",
+        "name": "Event Based Gateway",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "categories": "",
+        "assignments": "",
+        "pool": "",
+        "lanes": "",
+        "gates": "",
+        "gates_outgoingsequenceflow": "",
+        "gates_assignments": "",
+        "bgcolor": "#d0ce70",
+        "eventtype": "exclusive"
+      },
+      "stencil": { "id": "EventbasedGateway" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_628B7094-755E-4DD3-9712-21D2464B8CD7" },
+        { "resourceId": "oryx_BF0B15CC-4433-4B1C-853F-9773DEB518AC" },
+        { "resourceId": "oryx_B3178BC8-E583-4634-B0D2-31BC3C9823DB" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 324, "y": 337 },
+        "upperLeft": { "x": 284, "y": 297 }
+      },
+      "dockers": []
+    },
+    {
+      "resourceId": "oryx_628B7094-755E-4DD3-9712-21D2464B8CD7",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_B12F0F31-6C35-4264-B2E8-476597377518" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 415.17578125, "y": 296.96875 },
+        "upperLeft": { "x": 304.5, "y": 255 }
+      },
+      "dockers": [
+        { "x": 20.5, "y": 20.5 },
+        { "x": 304.5, "y": 255 },
+        { "x": 15, "y": 15 }
+      ],
+      "target": { "resourceId": "oryx_B12F0F31-6C35-4264-B2E8-476597377518" }
+    },
+    {
+      "resourceId": "oryx_BF0B15CC-4433-4B1C-853F-9773DEB518AC",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_305C57D0-320A-4F91-B7C8-F91F3D24BDE5" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 414.29296875, "y": 375 },
+        "upperLeft": { "x": 304.5, "y": 337.3671875 }
+      },
+      "dockers": [
+        { "x": 20.5, "y": 20.5 },
+        { "x": 304.5, "y": 375 },
+        { "x": 15, "y": 15 }
+      ],
+      "target": { "resourceId": "oryx_305C57D0-320A-4F91-B7C8-F91F3D24BDE5" }
+    },
+    {
+      "resourceId": "oryx_B12F0F31-6C35-4264-B2E8-476597377518",
+      "properties": {
+        "datainput": "",
+        "eventdefinitionref": "",
+        "inputset": "",
+        "type": "http:\/\/b3mn.org\/stencilset\/bpmn2.0#IntermediateEvent",
+        "eventdefinitions": "",
+        "datainputassociations": "",
+        "name": "M1",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "isinterrupting": true,
+        "boundarycancelactivity": "",
+        "bgcolor": "#ffffff",
+        "trigger": "Message"
+      },
+      "stencil": { "id": "IntermediateMessageEventCatching" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_124EB144-52B1-4BFA-B9E6-D62EEA7CB478" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 446, "y": 270 },
+        "upperLeft": { "x": 416, "y": 240 }
+      },
+      "dockers": [{ "x": 431, "y": 255 }]
+    },
+    {
+      "resourceId": "oryx_7DDD5044-245F-426E-B1FD-6F35F0B7EB83",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_D9099771-4D54-4292-A2ED-E1D7D38E8677" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 149.37501928882, "y": 317.36878893968 },
+        "upperLeft": { "x": 105.46482446118, "y": 317.09605481032 }
+      },
+      "dockers": [
+        { "x": 15, "y": 15 },
+        { "x": 20.5, "y": 20.5 }
+      ],
+      "target": { "resourceId": "oryx_D9099771-4D54-4292-A2ED-E1D7D38E8677" }
+    },
+    {
+      "resourceId": "oryx_D9099771-4D54-4292-A2ED-E1D7D38E8677",
+      "properties": {
+        "markervisible": "true",
+        "defaultgate": "",
+        "gate_outgoingsequenceflow": "",
+        "gate_assignments": "",
+        "type": "http:\/\/b3mn.org\/stencilset\/bpmn2.0#Exclusive_Databased_Gateway",
+        "xortype": "Data",
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "categories": "",
+        "assignments": "",
+        "pool": "",
+        "lanes": "",
+        "gates": "",
+        "gates_outgoingsequenceflow": "",
+        "gates_assignments": "",
+        "bgcolor": "#d0ce70",
+        "gatewaytype": "AND"
+      },
+      "stencil": { "id": "ParallelGateway" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_00183EA3-88CC-4D8E-856C-7F4F616854E3" },
+        { "resourceId": "oryx_D03380B5-984B-4CF4-907E-739EDBF0D59F" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 190, "y": 337 },
+        "upperLeft": { "x": 150, "y": 297 }
+      },
+      "dockers": []
+    },
+    {
+      "resourceId": "oryx_00183EA3-88CC-4D8E-856C-7F4F616854E3",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_2D134BC1-6031-4E33-A07E-2D9746CBAEF6" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 284.22656951363, "y": 317.42594220792 },
+        "upperLeft": { "x": 190.27343048637, "y": 317.07405779208 }
+      },
+      "dockers": [
+        { "x": 20.5, "y": 20.5 },
+        { "x": 20, "y": 20 }
+      ],
+      "target": { "resourceId": "oryx_2D134BC1-6031-4E33-A07E-2D9746CBAEF6" }
+    },
+    {
+      "resourceId": "oryx_D03380B5-984B-4CF4-907E-739EDBF0D59F",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": false
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_CE1E5B64-16AF-482C-9F1B-D3340B8DB38E" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 269.6875, "y": 296.87109375 },
+        "upperLeft": { "x": 170.5, "y": 150 }
+      },
+      "dockers": [
+        { "x": 20.5, "y": 20.5 },
+        { "x": 170.5, "y": 150 },
+        { "x": 15, "y": 15 }
+      ],
+      "target": { "resourceId": "oryx_CE1E5B64-16AF-482C-9F1B-D3340B8DB38E" }
+    },
+    {
+      "resourceId": "oryx_231EB29B-614D-4F8A-9983-A95B29D0713F",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "categories": "",
+        "assignments": "",
+        "pool": "",
+        "lanes": "",
+        "gates": "",
+        "gates_outgoingsequenceflow": "",
+        "gates_assignments": "",
+        "bgcolor": "#d0ce70",
+        "gatewaytype": "XOR",
+        "xortype": "Data",
+        "markervisible": "true",
+        "defaultgate": "",
+        "gate_outgoingsequenceflow": "",
+        "gate_assignments": ""
+      },
+      "stencil": { "id": "Exclusive_Databased_Gateway" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_57702FEC-9642-47FD-952B-BAD5B9C965C4" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 580, "y": 337 },
+        "upperLeft": { "x": 540, "y": 297 }
+      },
+      "dockers": []
+    },
+    {
+      "resourceId": "oryx_124EB144-52B1-4BFA-B9E6-D62EEA7CB478",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_231EB29B-614D-4F8A-9983-A95B29D0713F" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 560.5, "y": 296.96875 },
+        "upperLeft": { "x": 446.1640625, "y": 255 }
+      },
+      "dockers": [
+        { "x": 15, "y": 15 },
+        { "x": 560.5, "y": 255 },
+        { "x": 20.5, "y": 20.5 }
+      ],
+      "target": { "resourceId": "oryx_231EB29B-614D-4F8A-9983-A95B29D0713F" }
+    },
+    {
+      "resourceId": "oryx_7E7AEDC8-E28F-4AC8-B2A6-E66B1CF01A5E",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_231EB29B-614D-4F8A-9983-A95B29D0713F" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 560, "y": 375 },
+        "upperLeft": { "x": 445.21875, "y": 337.03125 }
+      },
+      "dockers": [
+        { "x": 15, "y": 15 },
+        { "x": 560, "y": 375 },
+        { "x": 20, "y": 20 }
+      ],
+      "target": { "resourceId": "oryx_231EB29B-614D-4F8A-9983-A95B29D0713F" }
+    },
+    {
+      "resourceId": "oryx_305C57D0-320A-4F91-B7C8-F91F3D24BDE5",
+      "properties": {
+        "datainput": "",
+        "eventdefinitionref": "",
+        "inputset": "",
+        "type": "http:\/\/b3mn.org\/stencilset\/bpmn2.0#IntermediateEvent",
+        "eventdefinitions": "",
+        "datainputassociations": "",
+        "name": "+10 min",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "isinterrupting": true,
+        "boundarycancelactivity": "",
+        "bgcolor": "#ffffff",
+        "trigger": "Timer"
+      },
+      "stencil": { "id": "IntermediateTimerEvent" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_7E7AEDC8-E28F-4AC8-B2A6-E66B1CF01A5E" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 445, "y": 390 },
+        "upperLeft": { "x": 415, "y": 360 }
+      },
+      "dockers": [{ "x": 430, "y": 375 }]
+    },
+    {
+      "resourceId": "oryx_57702FEC-9642-47FD-952B-BAD5B9C965C4",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 624.578125, "y": 318.5 },
+        "upperLeft": { "x": 580.09375, "y": 316.5 }
+      },
+      "dockers": [
+        { "x": 20.5, "y": 20.5 },
+        { "x": 20.5, "y": 20.5 }
+      ],
+      "target": { "resourceId": "oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A" }
+    },
+    {
+      "resourceId": "oryx_81B33D7A-FDEC-4126-8DA6-3AC8B31BD5BD",
+      "properties": {
+        "name": "END",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "eventdefinitionref": "",
+        "eventdefinitions": "",
+        "datainputassociations": "",
+        "datainput": "",
+        "inputset": "",
+        "bgcolor": "#d07070",
+        "trigger": "None"
+      },
+      "stencil": { "id": "EndNoneEvent" },
+      "childShapes": [],
+      "outgoing": [],
+      "bounds": {
+        "lowerRight": { "x": 738, "y": 331 },
+        "upperLeft": { "x": 710, "y": 303 }
+      },
+      "dockers": []
+    },
+    {
+      "resourceId": "oryx_F47150BC-00F4-4162-A832-771EA44A773C",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_81B33D7A-FDEC-4126-8DA6-3AC8B31BD5BD" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 709.50783278418, "y": 317.37644320245 },
+        "upperLeft": { "x": 664.89841721582, "y": 317.09230679755 }
+      },
+      "dockers": [
+        { "x": 20.5, "y": 20.5 },
+        { "x": 14, "y": 14 }
+      ],
+      "target": { "resourceId": "oryx_81B33D7A-FDEC-4126-8DA6-3AC8B31BD5BD" }
+    },
+    {
+      "resourceId": "oryx_3EA5ED97-E9B6-4F82-80A4-E9EC50579C12",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 645, "y": 297.08203125 },
+        "upperLeft": { "x": 300.0625, "y": 150 }
+      },
+      "dockers": [
+        { "x": 15, "y": 15 },
+        { "x": 645, "y": 150 },
+        { "x": 20, "y": 20 }
+      ],
+      "target": { "resourceId": "oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A" }
+    },
+    {
+      "resourceId": "oryx_B3178BC8-E583-4634-B0D2-31BC3C9823DB",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_3606D034-B3D4-461A-8580-8BBCCEBDBC33" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 415.17578125, "y": 465 },
+        "upperLeft": { "x": 304.5, "y": 337.513671875 }
+      },
+      "dockers": [
+        { "x": 20.5, "y": 20.5 },
+        { "x": 304.5, "y": 465 },
+        { "x": 15, "y": 15 }
+      ],
+      "target": { "resourceId": "oryx_3606D034-B3D4-461A-8580-8BBCCEBDBC33" }
+    },
+    {
+      "resourceId": "oryx_FA2340DC-1BE6-4C2A-9D6D-B3DDEE7E4695",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "conditiontype": "None",
+        "conditionexpression": "",
+        "isimmediate": "",
+        "showdiamondmarker": ""
+      },
+      "stencil": { "id": "SequenceFlow" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_231EB29B-614D-4F8A-9983-A95B29D0713F" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 560, "y": 465 },
+        "upperLeft": { "x": 446.109375, "y": 337.078125 }
+      },
+      "dockers": [
+        { "x": 15, "y": 15 },
+        { "x": 560, "y": 465 },
+        { "x": 20, "y": 20 }
+      ],
+      "target": { "resourceId": "oryx_231EB29B-614D-4F8A-9983-A95B29D0713F" }
+    },
+    {
+      "resourceId": "oryx_3606D034-B3D4-461A-8580-8BBCCEBDBC33",
+      "properties": {
+        "eventdefinitionref": "",
+        "eventdefinitions": "",
+        "datainputassociations": "",
+        "type": "http:\/\/b3mn.org\/stencilset\/bpmn2.0#IntermediateEvent",
+        "datainput": "",
+        "inputset": "",
+        "name": "Cancel Me",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "isinterrupting": true,
+        "boundarycancelactivity": "",
+        "bgcolor": "#ffffff",
+        "trigger": "Message"
+      },
+      "stencil": { "id": "IntermediateMessageEventCatching" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_FA2340DC-1BE6-4C2A-9D6D-B3DDEE7E4695" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 446, "y": 480 },
+        "upperLeft": { "x": 416, "y": 450 }
+      },
+      "dockers": [{ "x": 431, "y": 465 }]
+    },
+    {
+      "resourceId": "oryx_B34B5EB5-606E-4DA1-AB69-A58B7CD74F1A",
+      "properties": {
+        "markervisible": "true",
+        "defaultgate": "",
+        "gate_outgoingsequenceflow": "",
+        "gate_assignments": "",
+        "xortype": "Data",
+        "type": "http:\/\/b3mn.org\/stencilset\/bpmn2.0#Exclusive_Databased_Gateway",
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "categories": "",
+        "assignments": "",
+        "pool": "",
+        "lanes": "",
+        "gates": "",
+        "gates_outgoingsequenceflow": "",
+        "gates_assignments": "",
+        "bgcolor": "#d0ce70",
+        "gatewaytype": "AND"
+      },
+      "stencil": { "id": "ParallelGateway" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_F47150BC-00F4-4162-A832-771EA44A773C" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 665, "y": 337 },
+        "upperLeft": { "x": 625, "y": 297 }
+      },
+      "dockers": []
+    },
+    {
+      "resourceId": "oryx_CE1E5B64-16AF-482C-9F1B-D3340B8DB38E",
+      "properties": {
+        "type": "http:\/\/b3mn.org\/stencilset\/bpmn2.0#IntermediateMessageEventThrowing",
+        "entry": "fondyfpp",
+        "name": "M1",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "eventdefinitionref": "",
+        "eventdefinitions": "",
+        "datainputassociations": "",
+        "datainput": "",
+        "inputset": "",
+        "bgcolor": "#ffffff",
+        "trigger": "Message"
+      },
+      "stencil": { "id": "IntermediateMessageEventThrowing" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_3EA5ED97-E9B6-4F82-80A4-E9EC50579C12" },
+        { "resourceId": "oryx_A5E85A28-442A-4708-8DC8-9B62FF36BC7C" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 300, "y": 165 },
+        "upperLeft": { "x": 270, "y": 135 }
+      },
+      "dockers": [{ "x": 285, "y": 150 }]
+    },
+    {
+      "resourceId": "oryx_0864B939-7F21-4381-A864-320A64FB18D1",
+      "properties": {
+        "name": "",
+        "documentation": "",
+        "auditing": "",
+        "monitoring": "",
+        "categories": "",
+        "pool": "",
+        "lanes": "",
+        "text": "This message will trigger the top flow on the conditional events",
+        "artifacttype": "Annotation"
+      },
+      "stencil": { "id": "TextAnnotation" },
+      "childShapes": [],
+      "outgoing": [],
+      "bounds": {
+        "lowerRight": { "x": 551, "y": 101 },
+        "upperLeft": { "x": 330, "y": 39 }
+      },
+      "dockers": []
+    },
+    {
+      "resourceId": "oryx_A5E85A28-442A-4708-8DC8-9B62FF36BC7C",
+      "properties": { "assignments": "", "transformation": "", "type": " " },
+      "stencil": { "id": "Association_Undirected" },
+      "childShapes": [],
+      "outgoing": [
+        { "resourceId": "oryx_0864B939-7F21-4381-A864-320A64FB18D1" }
+      ],
+      "bounds": {
+        "lowerRight": { "x": 329.86341835701, "y": 136.441638513 },
+        "upperLeft": { "x": 292.87900351798, "y": 72.798048986996 }
+      },
+      "dockers": [
+        { "x": 15, "y": 15 },
+        { "x": 2.21, "y": 29.76 }
+      ],
+      "target": { "resourceId": "oryx_0864B939-7F21-4381-A864-320A64FB18D1" }
+    }
+  ],
+  "bounds": {
+    "lowerRight": { "x": 1485, "y": 1050 },
+    "upperLeft": { "x": 0, "y": 0 }
+  },
+  "stencilset": {
+    "url": "..\/..\/jscript\/bpm-dna2\/stencilsets\/bpmn2.0\/bpmn2.0_2.json",
+    "namespace": "http:\/\/b3mn.org\/stencilset\/bpmn2.0#"
+  },
+  "ssextensions": []
+}
