@@ -86,6 +86,9 @@ function load_model(idwf, callback) {
 
   options = {
     url: globals.apiUrl + "/bpm/repository" + "/svg/" + idwf,
+    headers: {
+      Authorization: "Bearer " + (localStorage.getItem("bpm_token") || ""),
+    },
     success: function () {
       load_data(idwf, callback);
     },

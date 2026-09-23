@@ -25,7 +25,7 @@ Ext.define('tokenModel', {
         'type',
         'status',
         'lockedBy',
-        'run'
+        'run',
     ]
 });
 

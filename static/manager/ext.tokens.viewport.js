@@ -5,20 +5,20 @@ var modelPanel= Ext.create('Ext.panel.Panel', {
 //  render: load_model
 }
 });
-        
+
 Ext.application({
     name: 'AppEditor',
     init: function(){
-        
+
     },
     launch:function(){
         var remove_loaders=function(){
-            
+
             Ext.get('loading').remove();
             Ext.fly('loading-mask').remove();
-                        
-        }        
-        var center = Ext.create('Ext.Panel', 
+
+        }
+        var center = Ext.create('Ext.Panel',
         {
             region:'center',
             margins:'0 0 0 0',
@@ -29,7 +29,7 @@ Ext.application({
                 layout:'fit',
                 title:'<i class="icon icon-time" ></i> Token History',
                 collapsible: true,
-                collapsed:true,
+                collapsed:false,
                 resizable:true,
                 height:300,
                 items:[tokenGrid]
@@ -68,8 +68,8 @@ Ext.application({
         }
         );
 
-        //---CREATE TOKENS VIEWPORT  
-        
+        //---CREATE TOKENS VIEWPORT
+
         Ext.create('Ext.Viewport', {
             layout:'border',
             items:[
@@ -85,10 +85,9 @@ Ext.application({
                     // load_model(globals.idwf);
                     tokens_load_status(globals.idwf,globals.idcase,tokens_paint_all);
                 }
-                    
+
             }
         });
     }
-    
-});
 
+});
