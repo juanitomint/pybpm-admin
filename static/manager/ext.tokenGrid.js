@@ -56,6 +56,7 @@ function playShape(result) {
       success: function (response) {
         var data = Ext.JSON.decode(response.responseText);
         var msg = data.message || data.error || response.responseText;
+        gridClick(null, mygrid.selModel.selected.items[0]);
         Ext.Msg.alert("Play Result", msg);
       },
       failure: function (response) {
