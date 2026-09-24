@@ -8,7 +8,7 @@ function revertTo(result) {
   if (result == "yes") {
     url =
       globals.apiUrl +
-      "bpm/case_manager/revert/model/" +
+      "/bpm/case_manager/revert/model/" +
       globals.idwf +
       "/" +
       globals.idcase +
@@ -368,7 +368,7 @@ var tokenGrid = Ext.create("Ext.grid.Panel", {
             Ext.Msg.confirm(
               "Confirm",
               "Are you sure you want to rewind to: " + rec.get("type") + "?",
-              function () { revertTo.call(rec); },
+              function () { revertTo.call(rec,'yes'); },
               rec,
             );
           },
