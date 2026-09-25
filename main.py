@@ -160,11 +160,37 @@ def create_app() -> FastAPI:
 
     @app.get("/login")
     async def login_page(request: Request):
-        """Serve the standalone login page."""
+        """Serve the standalone login page.
+
+        Captures the intended post-login redirect target from:
+        1. ?redirect= query parameter (set by client-side auth redirects)
+        2. Referer header (browser back-navigation)
+        Falls back to /admin if neither is available or referer is /logout.
+        """
+        # Prefer explicit ?redirect= parameter
+        redirect = request.query_params.get("redirect")
+
+        if not redirect:
+            # Fallback to Referer header
+            referer = request.headers.get("referer", "")
+            if referer:
+                # Extract path from full URL (e.g. "http://host/admin?foo=bar" → "/admin")
+                from urllib.parse import urlparse
+                parsed = urlparse(referer)
+                redirect = parsed.path
+
+        # Special case: if the user came from /logout, always redirect to /admin
+        if redirect == "/logout":
+            redirect = "/admin"
+
+        # Default fallback
+        if not redirect:
+            redirect = "/admin"
+
         return templates.TemplateResponse(
             request=request,
             name="login.html",
-            context={"request": request, "Config": Config},
+            context={"request": request, "Config": Config, "redirect": redirect},
         )
 
     @app.post("/login")

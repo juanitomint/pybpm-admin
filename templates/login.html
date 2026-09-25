@@ -79,7 +79,7 @@
       if (data.error) throw new Error(data.error);
       if (!data.access_token) throw new Error('No token received from server');
       localStorage.setItem('bpm_token', data.access_token);
-      window.location.href = '/admin';
+      window.location.href = '{{ redirect }}';
     })
     .catch(function(err) {
       errorDiv.textContent = err.message || 'Login failed.';

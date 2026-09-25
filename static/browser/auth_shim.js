@@ -54,7 +54,7 @@
                 if (response && response.status === 401) {
                     // Clear the expired session cookie by setting max-age=0.
                     document.cookie = COOKIE_NAME + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
-                    window.location.href = LOGIN_URL;
+                    window.location.href = LOGIN_URL + '?redirect=' + encodeURIComponent(document.location.pathname + document.location.search + document.location.hash);
                 }
                 if (typeof origFailure === 'function') {
                     origFailure(response, opts);
@@ -89,7 +89,7 @@
                 options.failure = function (response, opts) {
                     if (response && response.status === 401) {
                         document.cookie = COOKIE_NAME + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
-                        window.location.href = LOGIN_URL;
+                        window.location.href = LOGIN_URL + '?redirect=' + encodeURIComponent(document.location.pathname + document.location.search + document.location.hash);
                     }
                     if (typeof origFailure === 'function') {
                         origFailure(response, opts);

@@ -22,7 +22,8 @@ async function checkAuth() {
             console.warn('Auth check failed:', response.status);
             localStorage.removeItem('bpm_token');
             if (window.location.pathname !== '/login') {
-                window.location.href = '/login';
+                var current = window.location.pathname + window.location.search + window.location.hash;
+                window.location.href = '/login?redirect=' + encodeURIComponent(current);
             }
             return false;
         }
@@ -30,7 +31,8 @@ async function checkAuth() {
         console.error('Auth check error:', error);
         localStorage.removeItem('bpm_token');
         if (window.location.pathname !== '/login') {
-            window.location.href = '/login';
+            var current = window.location.pathname + window.location.search + window.location.hash;
+            window.location.href = '/login?redirect=' + encodeURIComponent(current);
         }
         return false;
     }

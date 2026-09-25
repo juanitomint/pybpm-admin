@@ -93,8 +93,10 @@
             ORYX.CONFIG.SS_EXTENSIONS_CONFIG = "static/jscript/editor/";
             if ('undefined' == typeof(window.onOryxResourcesLoaded)) {
                 ORYX.Log.warn('No adapter to repository specified, default used. You need a function window.onOryxResourcesLoaded that obtains model-JSON from your repository');
+            }
+            // WEB_URL is used by onOryxResourcesLoaded for auth error links
+            ORYX.CONFIG.WEB_URL = window.location.origin;
         </script>
-        <!-- erdf schemas -->
         <link rel="schema.dc" href="http://purl.org/dc/elements/1.1/" />
         <link rel="schema.dcTerms" href="http://purl.org/dc/terms/" />
         <link rel="schema.b3mn" href="http://b3mn.org" />
