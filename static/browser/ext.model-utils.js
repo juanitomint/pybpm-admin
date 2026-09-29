@@ -96,6 +96,13 @@ function load_model(idwf, callback) {
       center_panel.setLoading(false);
       load_data(idwf, callback);
     },
+    failure: function (response, opts) {
+      center_panel.setLoading(false);
+      if (response && response.status === 401) {
+        document.cookie = 'bpm_session=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+        window.location.href = '/login?redirect=' + encodeURIComponent(document.location.pathname + document.location.search + document.location.hash);
+      }
+    },
   };
 
   center_panel.body.load(options);
@@ -114,6 +121,13 @@ function load_json(idwf, callback) {
     success: function () {
       center_panel.setAutoScroll(true);
       modelPanel.setLoading(false)
+    },
+    failure: function (response, opts) {
+      modelPanel.setLoading(false);
+      if (response && response.status === 401) {
+        document.cookie = 'bpm_session=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+        window.location.href = '/login?redirect=' + encodeURIComponent(document.location.pathname + document.location.search + document.location.hash);
+      }
     },
   };
   center_panel.body.load(options);

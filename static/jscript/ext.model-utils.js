@@ -90,6 +90,13 @@ function load_model(idwf, callback) {
     success: function () {
       load_data(idwf, callback);
     },
+    failure: function (response, opts) {
+      center_panel.setLoading(false);
+      if (response && response.status === 401) {
+        document.cookie = 'bpm_session=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+        window.location.href = '/login?redirect=' + encodeURIComponent(document.location.pathname + document.location.search + document.location.hash);
+      }
+    },
   };
   center_panel.body.load(options);
 }
