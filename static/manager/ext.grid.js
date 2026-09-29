@@ -30,11 +30,25 @@ function gridClick(view, record, item, index, e, options) {
 function confirm(result) {
     if (result == 'yes') {
         gridSel = mygrid.selModel.selected.items[0];
-        dgstore.remove(gridSel);
-        dgstore.sync();
+
+        Ext.Ajax.request({
+            url: globals.apiUrl + '/bpm/repository/delete',
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer " + (localStorage.getItem("bpm_token") || "")
+            },
+            jsonData: { idwf: globals.idwf },
+            success: function() {
+                dgstore.remove(gridSel);
+                dgstore.sync();
+            },
+            failure: function() {
+                Ext.Msg.alert('Error', 'Failed to delete case');
+            }
+        });
     }
 }
-//---4 in place locking editor
 var checkLock = Ext.create('Ext.ux.CheckColumn', {
     xtype: 'checkcolumn',
     header: 'Locked',
