@@ -1,4 +1,4 @@
-/*
+make /*
  * Center panel
  *
  */
@@ -166,7 +166,7 @@ var ModelRun = Ext.create('Ext.Action', {
                     var data = Ext.decode(response.responseText);
                     if(data && data.idcase){
                         Ext.Msg.alert('Case Created','New case ID: '+data.idcase+' (model: '+data.idwf+')');
-                        tree.store.reload();
+
                     } else {
                         Ext.Msg.alert('Warning','Unexpected response from newcase endpoint.');
                     }
