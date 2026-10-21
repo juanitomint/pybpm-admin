@@ -183,6 +183,9 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Disable caching for admin/editor pages (ExtJS UI must always fetch fresh assets)
+    app.add_middleware(NoCacheMiddleware)
+
     # Mount static files (Oryx editor assets from legacy codebase)
     if os.path.isdir(Config.STATIC_ROOT):
         app.mount("/static", StaticFiles(directory=Config.STATIC_ROOT), name="static")
