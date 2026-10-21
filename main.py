@@ -429,6 +429,12 @@ def create_app() -> FastAPI:
 
     # ---- Code Editor API endpoints ----
 
+    @app.get("/code/data/{idwf}/{case_id}")
+    async def get_code_data(idwf: str, case_id: str):
+        """Fetch the data object for a case from pybpm-api."""
+        data = await _fetch_case_data(idwf, case_id)
+        return JSONResponse(content=data)
+
     @app.get("/code/{idwf}/{case_id}/{resource_id}")
     async def get_shape_code(idwf: str, case_id: str, resource_id: str):
         """Fetch script data for a shape in a model."""
@@ -463,12 +469,6 @@ def create_app() -> FastAPI:
                 "operationref": props.get("operationref", ""),
             }
         )
-
-    @app.get("/code/data/{idwf}/{case_id}")
-    async def get_code_data(idwf: str, case_id: str):
-        """Fetch the data object for a case from pybpm-api."""
-        data = await _fetch_case_data(idwf, case_id)
-        return JSONResponse(content=data)
 
     @app.post("/code/execute")
     async def execute_code(request: Request):
