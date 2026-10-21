@@ -70,12 +70,11 @@ class NoCacheMiddleware:
                     "/login",
                     "/logout",
                     "/editor",
-                    "/editor/code",
                     "/manager",
                     "/manager/model",
                     "/rbac",
                 )
-                or path.startswith("/static/jscript/")
+                or any(path.startswith(p) for p in ("/editor/code", "/static/jscript/"))
             )
 
             if not should_nocache:
