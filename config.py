@@ -31,6 +31,11 @@ class Config:
     # Admin URL prefix — all admin API routes live under this path (matches legacy `/admin/*`).
     ADMIN_URL_PREFIX = "/admin"
 
+    # Morty sandbox API — executes scripts in a sandboxed environment.
+    MORTY_API_URL = os.environ.get(
+        "MORTY_API_URL", "http://localhost:5000/api/v1/morty"
+    )
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

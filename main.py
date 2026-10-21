@@ -9,6 +9,7 @@ Serves:
 - The Model Manager UI at /manager/model/{idwf} (requires authentication — client-side guard)
 """
 
+import json
 import os
 from pathlib import Path
 
@@ -23,6 +24,35 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 from config import Config
 
 
+def _find_shape_by_id(child_shapes: list, resource_id: str) -> dict | None:
+    """Recursively search childShapes for a shape matching resource_id."""
+    for shape in child_shapes:
+        if shape.get("resourceId") == resource_id:
+            return shape
+        children = shape.get("childShapes", [])
+        if children:
+            result = _find_shape_by_id(children, resource_id)
+            if result:
+                return result
+    return None
+
+
+async def _fetch_case_data(idwf: str, case_id: str) -> dict:
+    """Fetch data object from pybpm-api case manager."""
+    api_url = Config.PYBPM_API_URL.rstrip("/")
+    url = f"{api_url}/bpm/case_manager/data/{idwf}/{case_id}"
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(url)
+            if resp.status_code == 200:
+                return resp.json()
+            return {"_error": f"pybpm-api returned {resp.status_code}: {resp.text}"}
+    except (httpx.ConnectError, httpx.TimeoutException) as err:
+        return {"_error": f"pybpm-api unreachable: {err}"}
+    except Exception as err:
+        return {"_error": f"Error fetching case data: {err}"}
+
+
 class NoCacheMiddleware:
     """Add Cache-Control headers to prevent browser caching of admin pages."""
 
@@ -32,16 +62,21 @@ class NoCacheMiddleware:
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] == "http":
             path = scope.get("path", "")
-            should_nocache = path in (
-                "/admin",
-                "/",
-                "/login",
-                "/logout",
-                "/editor",
-                "/manager",
-                "/manager/model",
-                "/rbac",
-            ) or path.startswith("/static/jscript/")
+            should_nocache = (
+                path
+                in (
+                    "/admin",
+                    "/",
+                    "/login",
+                    "/logout",
+                    "/editor",
+                    "/editor/code",
+                    "/manager",
+                    "/manager/model",
+                    "/rbac",
+                )
+                or path.startswith("/static/jscript/")
+            )
 
             if not should_nocache:
                 await self.app(scope, receive, send)
@@ -176,6 +211,7 @@ def create_app() -> FastAPI:
             if referer:
                 # Extract path from full URL (e.g. "http://host/admin?foo=bar" → "/admin")
                 from urllib.parse import urlparse
+
                 parsed = urlparse(referer)
                 redirect = parsed.path
 
@@ -290,7 +326,6 @@ def create_app() -> FastAPI:
             },
         )
 
-
     @app.get("/rbac")
     async def rbac_page(request: Request):
         """Render the RBAC Admin UI (groups, users, permissions)."""
@@ -328,6 +363,7 @@ def create_app() -> FastAPI:
                 "Config": Config,
             },
         )
+
     @app.get("/manager/model/{idwf}")
     async def manager_model(request: Request, idwf: str):
         """Render the Model Manager UI for a specific BPMN model.
@@ -386,9 +422,101 @@ def create_app() -> FastAPI:
                 "Config": Config,
             },
         )
+
     @app.get("/healthz")
     async def health_check():
         return {"status": "ok", "service": "pybpm-admin"}
+
+    # ---- Code Editor API endpoints ----
+
+    @app.get("/code/{idwf}/{case_id}/{resource_id}")
+    async def get_shape_code(idwf: str, case_id: str, resource_id: str):
+        """Fetch script data for a shape in a model."""
+        model_path = (
+            Path(Config.STATIC_ROOT) / "files" / "images" / "model" / f"{idwf}.json"
+        )
+        if not model_path.is_file():
+            return JSONResponse(
+                status_code=404,
+                content={"error": f"Model not found: {idwf}.json"},
+            )
+        try:
+            model = json.loads(model_path.read_text())
+        except json.JSONDecodeError as err:
+            return JSONResponse(
+                status_code=500,
+                content={"error": f"Invalid model JSON: {err}"},
+            )
+        shape = _find_shape_by_id(model.get("childShapes", []), resource_id)
+        if not shape:
+            return JSONResponse(
+                status_code=404,
+                content={"error": f"Shape not found: {resource_id}"},
+            )
+        props = shape.get("properties", {})
+        return JSONResponse(
+            content={
+                "resource_id": resource_id,
+                "shape_name": props.get("name", ""),
+                "script": props.get("script", ""),
+                "script_language": props.get("script_language", ""),
+                "operationref": props.get("operationref", ""),
+            }
+        )
+
+    @app.get("/code/data/{idwf}/{case_id}")
+    async def get_code_data(idwf: str, case_id: str):
+        """Fetch the data object for a case from pybpm-api."""
+        data = await _fetch_case_data(idwf, case_id)
+        return JSONResponse(content=data)
+
+    @app.post("/code/execute")
+    async def execute_code(request: Request):
+        """Execute a script via the morty sandbox API."""
+        body = await request.json()
+        language = body.get("language", "python")
+        script = body.get("script", "")
+        data = body.get("data", {})
+        morty_url = Config.MORTY_API_URL.rstrip("/") + "/execute"
+        payload = {"language": language, "script": script, "data": data}
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.post(morty_url, json=payload)
+                if resp.status_code == 200:
+                    return JSONResponse(content=resp.json())
+                return JSONResponse(
+                    status_code=resp.status_code,
+                    content={"error": resp.text},
+                )
+        except httpx.TimeoutException as err:
+            return JSONResponse(
+                status_code=504,
+                content={"error": f"Morty timed out: {err}"},
+            )
+        except (httpx.ConnectError, httpx.NetworkError) as err:
+            return JSONResponse(
+                status_code=502,
+                content={"error": f"Morty unreachable: {err}"},
+            )
+
+    @app.get("/editor/code/{idwf}/{case_id}/{resource_id}")
+    async def code_editor_page(
+        request: Request,
+        idwf: str,
+        case_id: str,
+        resource_id: str,
+    ):
+        """Render the standalone code editor page."""
+        return templates.TemplateResponse(
+            request=request,
+            name="code_editor.html",
+            context={
+                "request": request,
+                "idwf": idwf,
+                "case_id": case_id,
+                "resource_id": resource_id,
+            },
+        )
 
     # Disable caching for admin/editor pages (ExtJS UI must always fetch fresh assets)
 
