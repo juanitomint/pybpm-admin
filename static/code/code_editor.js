@@ -38,9 +38,12 @@
 
     function loadAceMode(modeName) {
         return new Promise(function (resolve, reject) {
-            // Try CDN first (local mode/ dir is empty)
+
+            // CDN fallback for mode loading
             var script = document.createElement("script");
-            script.src = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/mode/" + modeName + ".js";
+
+
+            script.src = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.44.0/src-noconflict/mode-" + modeName + ".js";
             script.onload = resolve;
             script.onerror = function() {
                 // Fallback to text mode on CDN failure
@@ -61,7 +64,8 @@
                 } catch (e) { /* fall through */ }
             }
             var script = document.createElement("script");
-            script.src = "/static/jscript/ace-builds/src-noconflict/theme/" + themeName + ".js";
+
+            script.src = "/static/jscript/ace-builds/src-noconflict/theme-" + themeName + ".js";
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);
