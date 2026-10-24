@@ -399,6 +399,8 @@ def create_app() -> FastAPI:
             f"{base_url}{module_url}ext.tokenGrid.js": "Types Grid",
             f"{base_url}{module_url}ext.grid.js": "Grid",
             f"{base_url}{module_url}/ext.model-utils.js": "Model utils",
+            f"{base_url}jscript/ace-builds/src-noconflict/ace.js": "ACE Editor",
+            f"{base_url}jscript/ace-builds/src-noconflict/mode-javascript.js": "ACE JS Mode",
             f"{base_url}{module_url}ext.add_events.js": "Events for overlays",
             f"{base_url}{module_url}ext.viewport.js": "viewport",
             f"{base_url}jscript/bootstrap/js/bootstrap.min.js": "Bootstrap JS",

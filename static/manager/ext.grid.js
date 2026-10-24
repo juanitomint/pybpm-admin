@@ -187,42 +187,8 @@ var mygrid = Ext.create("Ext.grid.Panel", {
               },
               success: function (response) {
                 var fval = response.responseText;
-                Ext.create("Ext.window.Window", {
-                  title: "Query Editor",
-                  height: 650,
-                  width: 500,
-                  layout: "fit",
-                  items: {
-                    // Let's put an empty grid in just to illustrate fit layout
-                    xtype: "panel",
-                    border: false,
-                    overflowY: "scroll",
-                    html: '<div id="jsoneditor"></div>', // One header just for show. There's no data,
-                  },
-                  listeners: {
-                    show: function () {
-                      var options = {
-                        mode: "view",
-                        modes: ["code", "form", "text", "tree", "view"], // allowed modes
-                        error: function (err) {
-                          alert(err.toString());
-                        },
-                      };
-                      if (fval) {
-                        json = Ext.JSON.decode(fval);
-                      } else {
-                        json = {};
-                      }
-
-                      var container = document.getElementById("jsoneditor");
-                      globals.jsonEd = new JSONEditor(container, options, json);
-                    },
-                  },
-                  close: function () {
-                    this.destroy();
-                  },
-                }).show();
-              },
+                showJsonEditor("Query Editor", fval);
+                },
             });
 
             return false;
@@ -241,7 +207,7 @@ var mygrid = Ext.create("Ext.grid.Panel", {
       flex: 2,
       text: "ID",
       dataIndex: "id",
-      sortable: true,
+      tdCls: "selectable-id",
     },
     {
       flex: 2,
@@ -312,3 +278,53 @@ var mygrid = Ext.create("Ext.grid.Panel", {
 
 //otherstore.load();
 //dgstore.load();
+/**
+ * Reusable JSONEditor window opener.
+ * @param {String} title - Window title
+ * @param {Object|String} jsonData - JSON object or response text
+ * @param {Object} [options] - JSONEditor options (mode, modes, etc.)
+ */
+function showJsonEditor(title, jsonData, options) {
+    var winId = 'jsoneditor-' + Date.now();
+    var win = Ext.create("Ext.window.Window", {
+        title: title,
+        height: 650,
+        width: 500,
+        layout: "fit",
+        items: {
+            xtype: "panel",
+            border: false,
+            overflowY: "scroll",
+            html: '<div id="' + winId + '"></div>',
+        },
+        listeners: {
+            show: function () {
+                var editorOpts = Ext.apply({
+                    mode: "view",
+                    modes: ["code", "form", "text", "tree", "view"],
+                    error: function (err) {
+                        Ext.Msg.alert('JSON Editor Error', err.toString());
+                    },
+                }, options || {});
+
+                var parsed;
+                if (typeof jsonData === 'string') {
+                    parsed = jsonData ? Ext.JSON.decode(jsonData) : {};
+                } else {
+                    parsed = jsonData || {};
+                }
+
+                var container = document.getElementById(winId);
+                if (container && typeof JSONEditor !== 'undefined') {
+                    var editor = new JSONEditor(container, editorOpts, parsed);
+                    win.on('destroy', function () {
+                        if (editor && editor.destroy) {
+                            editor.destroy();
+                        }
+                    });
+                }
+            },
+        },
+    });
+    return win.show();
+}
